@@ -30,7 +30,8 @@ export class StrikezoneComponent {
         this.strikezoneCanvas.nativeElement.height = physicalScreenW*.7-10;
         console.log(this.strikezoneCanvas.nativeElement.width);
         let szsize = 125./300.*(physicalScreenW*.7-10);
-        drawZone(this.strikezoneCanvas.nativeElement.getContext('2d'),szsize,10,10,this.strikezoneCanvas.nativeElement.width,this.strikezoneCanvas.nativeElement.height,true,0);
+        let last10 = [[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0]]
+        drawZone(this.strikezoneCanvas.nativeElement.getContext('2d'),szsize,10,10,this.strikezoneCanvas.nativeElement.width,this.strikezoneCanvas.nativeElement.height,true,0,last10);
     }
 
     onTap(event){
@@ -56,11 +57,11 @@ function stopZone(tx,ty){
 	touchy = ty;
 }
 
-function update(leftx,topy,pitchvelocity,maxx,maxy,szsize){
+function update(leftx,topy,pitchvelocity,maxx,maxy,szsize,last10){
     if (leftx+pitchvelocity < maxx-szsize-10){
         if (leftx-pitchvelocity > 10){
             let randx = Math.random();
-            if (randx < 1./(1.+10.**((leftx-88.)/270.))){
+            if (randx < 1./(1.+10.**((leftx-88.)/270.))+last10[0].reduce(function (a, b) {  return a + b;}, 0)/10.-.5){
                 leftx=leftx+pitchvelocity;
             }
             else{
@@ -78,7 +79,7 @@ function update(leftx,topy,pitchvelocity,maxx,maxy,szsize){
     if (topy+pitchvelocity < maxy-szsize-10){
         if (topy-pitchvelocity > 10){
             let randx = Math.random();
-            if (randx < 1./(1.+10.**((topy-88.)/270.))){
+            if (randx < 1./(1.+10.**((topy-88.)/270.))+last10[1].reduce(function (a, b) {  return a + b;}, 0)/10.-.5){
                 topy=topy+pitchvelocity;
             }
             else{
@@ -94,14 +95,20 @@ function update(leftx,topy,pitchvelocity,maxx,maxy,szsize){
     }
     return [leftx, topy];
 }
-function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp){
+function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp,last10){
 	let element = document.getElementById('pitchinfo');
 	let pitchstring = element.innerText || element.textContent;
 	if (pitchstring != 'NOTHING'){
 	startanimate = true;
     let pitchn = parseInt(pitchstring);
     let rawvelocity = (pitchn*253*169)%1013;
-    let rawtimes = (rawvelocity+10.)/5.;
+    let delta = 0;
+    if (timestamp>lastframe){
+        delta = Math.min((timestamp-lastframe)/16.,5);
+        console.log(delta);
+        lastframe=timestamp;
+    }
+    let rawtimes = delta*(rawvelocity+10.)/5.;
     let ftimes = Math.floor(rawtimes);
     if (Math.random()<rawtimes-ftimes){
         ntimes = ftimes+1;
@@ -131,15 +138,30 @@ function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp
 
     if (startanimate) {
     let i = 0;
-    console.log(ntimes);
     for (i=0;i<ntimes;i++){
-    let locat = update(leftx,topy,pitchvelocity,maxx,maxy,szsize);
+    let lastleftx = leftx;
+    let lasttopy = topy;
+    let locat = update(leftx,topy,pitchvelocity,maxx,maxy,szsize,last10);
     leftx = locat[0];
     topy =locat[1];
+    last10[0].shift();
+    if (leftx>lastleftx){
+    last10[0].push(1);
+    }
+    else{
+    last10[0].push(0);
+    }
+    last10[1].shift();
+    if (topy>lasttopy){
+    last10[1].push(1);
+    }
+    else{
+    last10[1].push(0);
+    }
     }
     }
 
-    requestAnimationFrame(function(timestamp) {drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,startanimate,timestamp)});
+    requestAnimationFrame(function(timestamp) {drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,startanimate,timestamp,last10)});
     }
 
     else{
@@ -169,7 +191,7 @@ function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp
 	startanimate = false;
     let element = document.getElementById('pitchinfo');
     element.innerHTML = 'NOTHING';
-    requestAnimationFrame(function(timestamp) {drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,false,timestamp)});
+    requestAnimationFrame(function(timestamp) {drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,false,timestamp,last10)});
     }
     
 
