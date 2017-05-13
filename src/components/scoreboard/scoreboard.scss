@@ -1,0 +1,23 @@
+scoreboard {
+table, th, td {
+   border: 1px solid black;
+}
+table {
+    width: 100%;
+}
+th {
+	width:6%;
+	text-align: center;
+	text-decoration: bold;
+}
+td {
+	width:6%;
+	text-align: center;
+}
+td.team {
+	width: 28%;
+	text-align: left;
+}
+
+
+}
