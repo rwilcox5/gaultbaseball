@@ -17,13 +17,27 @@ export class BatterinfoComponent {
   avg: string;
   obp: string;
   slg: string;
+  k: string;
+  pa: string;
+  bb: string;
+  hr: string;
+
+  avgH: string;
+  obpH: string;
+  slgH: string;
+  kH: string;
+  paH: string;
+  bbH: string;
+  hrH: string;
 
   constructor(storage: Storage) {
   let i = 0;
   let cutoffs = [.6,.55,.525,.5,.475,.45,.425,.4,.375,.35,.325,.3,.275,.25,.2];
   let aahold = ['blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue'];
   storage.ready().then(() => {
-       storage.get('player1').then((val) => {this.avg = val.stats.avg; this.obp = val.stats.obp; this.slg = val.stats.slg;
+       storage.get('player1').then((val) => {
+       this.avg = val.stats.avg.toFixed(3); this.obp = val.stats.obp.toFixed(3); this.slg = val.stats.slg.toFixed(3); this.k = val.stats.k; this.pa = val.stats.pa; this.bb = val.stats.bb; this.hr = val.stats.hr;
+       this.avgH = val.statsR.avg.toFixed(3); this.obpH = val.statsR.obp.toFixed(3); this.slgH = val.statsR.slg.toFixed(3); this.kH = val.statsR.k; this.paH = val.statsR.pa; this.bbH = val.statsR.bb; this.hrH = val.statsR.hr;
        for (i=0;i<25;i++){
 	       if (val.zones[i][0]/val.zones[i][1]>cutoffs[0]){ aahold[i] = 'red8'; }
 	       else if (val.zones[i][0]/val.zones[i][1]>cutoffs[1]){ aahold[i] = 'red7'; }

@@ -1,4 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
+import { Events } from 'ionic-angular';
 
 /**
  * Generated class for the StrikezoneComponent component.
@@ -16,7 +17,7 @@ import { Component, ViewChild } from '@angular/core';
 export class StrikezoneComponent {
   @ViewChild('strikezoneCanvas') strikezoneCanvas;
 
-  constructor() {
+  constructor(public events: Events) {
 
 
   }
@@ -25,10 +26,8 @@ export class StrikezoneComponent {
 	ngAfterViewInit(){  
         let myelement = document.getElementById('scoreboard');
         let physicalScreenW = myelement.getBoundingClientRect().width;
-        console.log(this.strikezoneCanvas.nativeElement.width);
         this.strikezoneCanvas.nativeElement.width = physicalScreenW*.7-10;
         this.strikezoneCanvas.nativeElement.height = physicalScreenW*.7-10;
-        console.log(this.strikezoneCanvas.nativeElement.width);
         let szsize = 125./300.*(physicalScreenW*.7-10);
         let last10 = [[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0]]
         drawZone(this.strikezoneCanvas.nativeElement.getContext('2d'),szsize,10,10,this.strikezoneCanvas.nativeElement.width,this.strikezoneCanvas.nativeElement.height,true,0,last10);
@@ -36,13 +35,18 @@ export class StrikezoneComponent {
 
     onTap(event){
     stopZone(event.srcEvent.offsetX,event.srcEvent.offsetY);
+    myevent = this.events;
     }
 
 
 
 
 }
-
+var myevent;
+var thecall = 'ball';
+var theSwing = 'take';
+var theContact = 'miss';
+var thePlay = 'out';
 var stopanimate = false;
 var startanimate = false;
 var touchx = 0;
@@ -105,7 +109,6 @@ function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp
     let delta = 0;
     if (timestamp>lastframe){
         delta = Math.min((timestamp-lastframe)/16.,5);
-        console.log(delta);
         lastframe=timestamp;
     }
     let rawtimes = delta*(rawvelocity+10.)/5.;
@@ -166,10 +169,6 @@ function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp
 
     else{
     ctx.clearRect(0, 0, maxx,maxy);
-    console.log(leftx);
-    console.log(touchx);
-    console.log(topy);
-    console.log(touchy);
     ctx.clearRect(0, 0, maxx,maxy);
     ctx.beginPath();
 
@@ -187,6 +186,16 @@ function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp
 	ctx.arc(touchx,touchy,10,0,2*Math.PI);
 	ctx.stroke();
 	ctx.fill();
+
+    let isStrike = makeCall(touchx,touchy, leftx, topy,szsize);
+    let isSwing = makeSwing(touchx,touchy, leftx, topy,szsize);
+    if (isSwing=='swing'){
+        let isContact = makeContact(touchx,touchy, leftx, topy,szsize);
+        if (isContact=='fair'){
+            let isPlay = makePlay(touchx,touchy, leftx, topy,szsize);
+        }
+    }
+
 	stopanimate = false;
 	startanimate = false;
     let element = document.getElementById('pitchinfo');
@@ -195,4 +204,88 @@ function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp
     }
     
 
-  }
+ }
+
+function makeCall(tx,ty,zx,zy,szsize){
+    thecall = 'ball';
+    if (tx>zx){
+        if (tx<zx+szsize){
+            if (ty>zy){
+                if (ty<zy+szsize){
+                    thecall = 'strike';
+                    
+                }
+}}}
+
+    myevent.publish('userTap', thecall);
+    console.log(thecall);
+    return thecall;
+
+ }
+
+ function makeSwing(tx,ty,zx,zy,szsize){
+    theSwing = 'take';
+    if (tx>zx){
+        if (tx<zx+szsize){
+            if (ty>zy){
+                if (ty<zy+szsize){
+    let midpointx = szsize/2+zx;
+    let midpointy = szsize/2+zy;
+    let midpointDist = Math.sqrt((tx-midpointx)**2+(ty-midpointy)**2);
+    let szDist = Math.min(tx-zx,ty-zy);
+    let percentSwing = szDist/(szDist+midpointDist);
+    if (Math.random()<percentSwing){
+    theSwing = 'swing';
+    }
+    }
+    }
+    }
+    }
+    console.log(theSwing);
+    return theSwing;
+ }
+
+ function makeContact(tx,ty,zx,zy,szsize){
+    theContact = 'miss';
+    let midpointx = szsize/2+zx;
+    let midpointy = szsize/2+zy;
+    let midpointDist = Math.sqrt((tx-midpointx)**2+(ty-midpointy)**2);
+    let szDist = Math.min(tx-zx,ty-zy);
+    let percentFair = szDist/(szDist+midpointDist)/3+.2;
+    let percentFoul = szDist/(szDist+midpointDist)/3+.2;
+    if (Math.random()<percentFair){
+    theContact = 'fair';
+    }
+    else if (Math.random()<percentFoul){
+    theContact = 'foul';
+    }
+    console.log(theContact);
+    return theContact;
+ }
+
+  function makePlay(tx,ty,zx,zy,szsize){
+    theContact = 'out';
+    let midpointx = szsize/2+zx;
+    let midpointy = szsize/2+zy;
+    let midpointDist = Math.sqrt((tx-midpointx)**2+(ty-midpointy)**2);
+    let szDist = Math.min(tx-zx,ty-zy);
+    let percent1b = szDist/(szDist+midpointDist)/3+.2;
+    let percent2b = szDist/(szDist+midpointDist)/4+.1;
+    let percent3b = szDist/(szDist+midpointDist)/6;
+    let percenthr = szDist/(szDist+midpointDist)/3+.2;
+    if (Math.random()<percent1b){
+    thePlay = 'single';
+    }
+    else if (Math.random()<percent2b){
+    thePlay = 'double';
+    }
+    else if (Math.random()<percent3b){
+    thePlay = 'triple';
+    }
+    else if (Math.random()<percenthr){
+    thePlay = 'homer';
+    }
+    console.log(thePlay);
+    return thePlay;
+ }
+
