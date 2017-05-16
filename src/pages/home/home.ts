@@ -22,6 +22,8 @@ export class HomePage {
 
 
   	   this.storage.set('player2', createPlayer('Billy "Buttermilk" Jackson'));
+  	   this.storage.set('situation', [0,0,0,0,[0,0,0]]);
+  	   this.storage.set('linescore',[[0,0,0,0],[1,0,0]]);
      });
 
 

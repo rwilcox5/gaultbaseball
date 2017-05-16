@@ -9,6 +9,7 @@ import { SituationComponentModule } from '../../components/situation/situation.m
 import { BatterinfoComponentModule } from '../../components/batterinfo/batterinfo.module';
 import { PitcherinfoComponentModule } from '../../components/pitcherinfo/pitcherinfo.module';
 import { InfomenuComponentModule } from '../../components/infomenu/infomenu.module';
+import { CentrallogicComponentModule } from '../../components/centrallogic/centrallogic.module';
 @NgModule({
   declarations: [
     GamePage,
@@ -20,6 +21,7 @@ import { InfomenuComponentModule } from '../../components/infomenu/infomenu.modu
     BatterinfoComponentModule,
     PitcherinfoComponentModule,
     InfomenuComponentModule,
+    CentrallogicComponentModule,
     IonicPageModule.forChild(GamePage),
   ],
   exports: [

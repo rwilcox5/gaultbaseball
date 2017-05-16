@@ -18,12 +18,18 @@ export class StrikezoneComponent {
   @ViewChild('strikezoneCanvas') strikezoneCanvas;
 
   constructor(public events: Events) {
-
+    
 
   }
 
 
 	ngAfterViewInit(){  
+
+        let canvas = this.strikezoneCanvas.nativeElement;
+        canvas.addEventListener("mousedown", function (e) {
+                stopZone(e.clientX-Math.floor(canvas.getBoundingClientRect().left)-1,e.clientY-Math.floor(canvas.getBoundingClientRect().top)-1);
+
+        }, false);
         let myelement = document.getElementById('scoreboard');
         let physicalScreenW = myelement.getBoundingClientRect().width;
         this.strikezoneCanvas.nativeElement.width = physicalScreenW*.7-10;
@@ -31,14 +37,8 @@ export class StrikezoneComponent {
         let szsize = 125./300.*(physicalScreenW*.7-10);
         let last10 = [[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0]]
         drawZone(this.strikezoneCanvas.nativeElement.getContext('2d'),szsize,10,10,this.strikezoneCanvas.nativeElement.width,this.strikezoneCanvas.nativeElement.height,true,0,last10);
+        myevent = this.events;
     }
-
-    onTap(event){
-    stopZone(event.srcEvent.offsetX,event.srcEvent.offsetY);
-    myevent = this.events;
-    }
-
-
 
 
 }
@@ -186,15 +186,8 @@ function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp
 	ctx.arc(touchx,touchy,10,0,2*Math.PI);
 	ctx.stroke();
 	ctx.fill();
+    myevent.publish('userTap',[touchx,touchy,leftx,topy,szsize]);
 
-    let isStrike = makeCall(touchx,touchy, leftx, topy,szsize);
-    let isSwing = makeSwing(touchx,touchy, leftx, topy,szsize);
-    if (isSwing=='swing'){
-        let isContact = makeContact(touchx,touchy, leftx, topy,szsize);
-        if (isContact=='fair'){
-            let isPlay = makePlay(touchx,touchy, leftx, topy,szsize);
-        }
-    }
 
 	stopanimate = false;
 	startanimate = false;
@@ -206,86 +199,5 @@ function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp
 
  }
 
-function makeCall(tx,ty,zx,zy,szsize){
-    thecall = 'ball';
-    if (tx>zx){
-        if (tx<zx+szsize){
-            if (ty>zy){
-                if (ty<zy+szsize){
-                    thecall = 'strike';
-                    
-                }
-}}}
 
-    myevent.publish('userTap', thecall);
-    console.log(thecall);
-    return thecall;
-
- }
-
- function makeSwing(tx,ty,zx,zy,szsize){
-    theSwing = 'take';
-    if (tx>zx){
-        if (tx<zx+szsize){
-            if (ty>zy){
-                if (ty<zy+szsize){
-    let midpointx = szsize/2+zx;
-    let midpointy = szsize/2+zy;
-    let midpointDist = Math.sqrt((tx-midpointx)**2+(ty-midpointy)**2);
-    let szDist = Math.min(tx-zx,ty-zy);
-    let percentSwing = szDist/(szDist+midpointDist);
-    if (Math.random()<percentSwing){
-    theSwing = 'swing';
-    }
-    }
-    }
-    }
-    }
-    console.log(theSwing);
-    return theSwing;
- }
-
- function makeContact(tx,ty,zx,zy,szsize){
-    theContact = 'miss';
-    let midpointx = szsize/2+zx;
-    let midpointy = szsize/2+zy;
-    let midpointDist = Math.sqrt((tx-midpointx)**2+(ty-midpointy)**2);
-    let szDist = Math.min(tx-zx,ty-zy);
-    let percentFair = szDist/(szDist+midpointDist)/3+.2;
-    let percentFoul = szDist/(szDist+midpointDist)/3+.2;
-    if (Math.random()<percentFair){
-    theContact = 'fair';
-    }
-    else if (Math.random()<percentFoul){
-    theContact = 'foul';
-    }
-    console.log(theContact);
-    return theContact;
- }
-
-  function makePlay(tx,ty,zx,zy,szsize){
-    theContact = 'out';
-    let midpointx = szsize/2+zx;
-    let midpointy = szsize/2+zy;
-    let midpointDist = Math.sqrt((tx-midpointx)**2+(ty-midpointy)**2);
-    let szDist = Math.min(tx-zx,ty-zy);
-    let percent1b = szDist/(szDist+midpointDist)/3+.2;
-    let percent2b = szDist/(szDist+midpointDist)/4+.1;
-    let percent3b = szDist/(szDist+midpointDist)/6;
-    let percenthr = szDist/(szDist+midpointDist)/3+.2;
-    if (Math.random()<percent1b){
-    thePlay = 'single';
-    }
-    else if (Math.random()<percent2b){
-    thePlay = 'double';
-    }
-    else if (Math.random()<percent3b){
-    thePlay = 'triple';
-    }
-    else if (Math.random()<percenthr){
-    thePlay = 'homer';
-    }
-    console.log(thePlay);
-    return thePlay;
- }
 

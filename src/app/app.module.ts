@@ -14,9 +14,9 @@ import { StrikezoneComponent } from '../components/strikezone/strikezone';
 import { ScoreboardComponent } from '../components/scoreboard/scoreboard';
 import { SituationComponent } from '../components/situation/situation';
 import { BatterinfoComponent } from '../components/batterinfo/batterinfo';
-import { PitchesinfoComponent } from '../components/pitchesinfo/pitchesinfo';
 import { InfomenuComponent } from '../components/infomenu/infomenu';
 import { PitcherinfoComponent } from '../components/pitcherinfo/pitcherinfo';
+import { CentrallogicComponent } from '../components/centrallogic/centrallogic';
 
 
 
@@ -30,9 +30,9 @@ import { PitcherinfoComponent } from '../components/pitcherinfo/pitcherinfo';
     ScoreboardComponent,
     SituationComponent,
     BatterinfoComponent,
-    PitchesinfoComponent,
     InfomenuComponent,
-    PitcherinfoComponent
+    PitcherinfoComponent,
+    CentrallogicComponent
   ],
   imports: [
     BrowserModule,
