@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { Events } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
 
 /**
  * Generated class for the StrikezoneComponent component.
@@ -17,9 +18,33 @@ import { Events } from 'ionic-angular';
 export class StrikezoneComponent {
   @ViewChild('strikezoneCanvas') strikezoneCanvas;
 
-  constructor(public events: Events) {
+  constructor(public events: Events, storage: Storage) {
     
+  storage.ready().then(() => {
+       abh = [];
+       abv = [];
+       storage.get('currentSequence').then((val) => {
+       let i = 0;
+       for (i=0;i<val.length;i++){
+           abh.push(val[i][0]);
+           abv.push(val[i][1]);
+       }
+       })
+       })
 
+  this.events.subscribe('centralTap', val => {
+    storage.ready().then(() => {
+       abh = [];
+       abv =[];
+       storage.get('currentSequence').then((val) => {
+       let i = 0;
+       for (i=0;i<val.length;i++){
+           abh.push(val[i][0]);
+           abv.push(val[i][1]);
+       }
+       })
+       })
+  })
   }
 
 
@@ -32,12 +57,16 @@ export class StrikezoneComponent {
         }, false);
         let myelement = document.getElementById('scoreboard');
         let physicalScreenW = myelement.getBoundingClientRect().width;
-        this.strikezoneCanvas.nativeElement.width = physicalScreenW*.7-10;
-        this.strikezoneCanvas.nativeElement.height = physicalScreenW*.7-10;
-        let szsize = 125./300.*(physicalScreenW*.7-10);
+        this.strikezoneCanvas.nativeElement.width = physicalScreenW*.67-10;
+        this.strikezoneCanvas.nativeElement.height = physicalScreenW*.67-10;
+        let szsize = 125./300.*(physicalScreenW*.67-10);
         let last10 = [[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0]]
-        drawZone(this.strikezoneCanvas.nativeElement.getContext('2d'),szsize,10,10,this.strikezoneCanvas.nativeElement.width,this.strikezoneCanvas.nativeElement.height,true,0,last10);
+        drawZone(this.strikezoneCanvas.nativeElement.getContext('2d'),szsize,(physicalScreenW*.67-10)/2.-szsize/2.,(physicalScreenW*.67-10)/2.-szsize/2.,this.strikezoneCanvas.nativeElement.width,this.strikezoneCanvas.nativeElement.height,true,0,last10);
         myevent = this.events;
+
+       
+
+
     }
 
 
@@ -56,7 +85,8 @@ var lastframe = 0;
 var ntimes = 0;
 var hdist = 0;
 var vdist = 0;
-
+var abh = [];
+var abv = [];
 
 function stopZone(tx,ty){
 	stopanimate = true;
@@ -65,8 +95,9 @@ function stopZone(tx,ty){
 }
 
 function update(leftx,topy,pitchvelocity,maxx,maxy,szsize,last10){
-    if (leftx+pitchvelocity < maxx-szsize-10){
-        if (leftx-pitchvelocity > 10){
+    let buffer = szsize/3.;
+    if (leftx+pitchvelocity < maxx-szsize-buffer){
+        if (leftx-pitchvelocity > buffer){
             let randx = Math.random();
             if (randx < 1./(1.+10.**((leftx-88.)/270.))+last10[0].reduce(function (a, b) {  return a + b;}, 0)/10.-.5){
                 leftx=leftx+pitchvelocity;
@@ -83,8 +114,8 @@ function update(leftx,topy,pitchvelocity,maxx,maxy,szsize,last10){
         leftx=leftx-pitchvelocity;
     }
 
-    if (topy+pitchvelocity < maxy-szsize-10){
-        if (topy-pitchvelocity > 10){
+    if (topy+pitchvelocity < maxy-szsize-buffer){
+        if (topy-pitchvelocity > buffer){
             let randx = Math.random();
             if (randx < 1./(1.+10.**((topy-88.)/270.))+last10[1].reduce(function (a, b) {  return a + b;}, 0)/10.-.5){
                 topy=topy+pitchvelocity;
@@ -105,6 +136,22 @@ function update(leftx,topy,pitchvelocity,maxx,maxy,szsize,last10){
 function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp,last10){
 	let element = document.getElementById('pitchinfo');
 	let pitchstring = element.innerText || element.textContent;
+    if (pitchstring == 'NOTHING'){
+        let i = 0;
+        for (i=0;i<abh.length;i++){
+            if (abh[i]>0 && abv[i]>0){
+            let ctx = strikezoneCanvas;
+            ctx.fillStyle="#EEEEEE";
+            ctx.beginPath();
+            ctx.arc(leftx+abh[i]*szsize/100.,topy+abv[i]*szsize/100.,10,0,2*Math.PI);
+            ctx.stroke();
+            ctx.fill();
+            ctx.fillStyle="#000000";
+            ctx.font = "18px Arial";
+            ctx.fillText((i+1).toString(),leftx+abh[i]*szsize/100.-4,topy+abv[i]*szsize/100.+7);
+        }
+        }
+    }
 	if (pitchstring != 'NOTHING'){
 	startanimate = true;
     hdist = 20;

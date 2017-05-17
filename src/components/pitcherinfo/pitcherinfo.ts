@@ -78,7 +78,7 @@ export class PitcherinfoComponent {
 	  var c = <HTMLCanvasElement> document.getElementById("pitch".concat(i.toString()));
 	  c.width= physicalScreenW*.19;
 	  c.height= physicalScreenW*.19;
-	  let multiplier = 1.25/600.*(physicalScreenW*.7-10)*(this.Movement+100.)/150.;
+	  let multiplier = 1.25/600.*(physicalScreenW*.67-10)*(this.Movement+100.)/150.;
 	  var ctx = c.getContext('2d');
 	  let midpoint = physicalScreenW*.095;
 	  canvas_arrow(ctx,midpoint-hdist[i-1]*multiplier,midpoint-vdist[i-1]*multiplier,midpoint+hdist[i-1]*multiplier,midpoint+vdist[i-1]*multiplier);
@@ -103,8 +103,9 @@ export class PitcherinfoComponent {
   ngAfterViewInit(){ 
   let myelement = document.getElementById('scoreboard');
   let physicalScreenW = myelement.getBoundingClientRect().width; 
-  document.getElementById('velocitySlider').style.width = (physicalScreenW*.25).toString().concat('px');
-	  document.getElementById('movementSlider').style.width = (physicalScreenW*.25).toString().concat('px');
+  document.getElementById('pitcherInfo').style.height = (physicalScreenW*.67-10).toString().concat('px');
+  document.getElementById('velocitySlider').style.width = (physicalScreenW*.33).toString().concat('px');
+	  document.getElementById('movementSlider').style.width = (physicalScreenW*.33).toString().concat('px');
   
   }
 
@@ -126,7 +127,7 @@ export class PitcherinfoComponent {
   var c = <HTMLCanvasElement> document.getElementById("pitch".concat(i.toString()));
   c.width= physicalScreenW*.19;
   c.height= physicalScreenW*.19;
-  let multiplier = 1.25/600.*(physicalScreenW*.7-10)*(this.Movement+100.)/150.;
+  let multiplier = 1.25/600.*(physicalScreenW*.67-10)*(this.Movement+100.)/150.;
   var ctx = c.getContext('2d');
   let midpoint = physicalScreenW*.095;
   canvas_arrow(ctx,midpoint-hdist[i-1]*multiplier,midpoint-vdist[i-1]*multiplier,midpoint+hdist[i-1]*multiplier,midpoint+vdist[i-1]*multiplier);

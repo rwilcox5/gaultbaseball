@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
+import { GamePage } from '../game/game';
 
 @Component({
   selector: 'page-home',
@@ -13,21 +14,32 @@ export class HomePage {
 	   this.storage = new Storage(Storage);
 
   }
+  continueGame(){this.navCtrl.push(GamePage);}
  
-  createOpponent(){
+  newGame(){
    
 	this.storage.ready().then(() => {
 
-	   this.storage.get('nicknames').then((val) => {this.allnicknames = val[3]; this.storage.set('player1', createPlayer(this.allnicknames));;});
+	   this.storage.get('nicknames').then((val) => {
+	   this.allnicknames = val[0]; this.storage.set('player1', createPlayer(this.allnicknames));
+	   this.allnicknames = val[1]; this.storage.set('player2', createPlayer(this.allnicknames));
+	   this.allnicknames = val[2]; this.storage.set('player3', createPlayer(this.allnicknames));
+	   this.allnicknames = val[3]; this.storage.set('player4', createPlayer(this.allnicknames));
+	   this.allnicknames = val[4]; this.storage.set('player5', createPlayer(this.allnicknames));
+	   this.allnicknames = val[1]; this.storage.set('player6', createPlayer(this.allnicknames));
+	   this.allnicknames = val[2]; this.storage.set('player7', createPlayer(this.allnicknames));
+	   this.allnicknames = val[3]; this.storage.set('player8', createPlayer(this.allnicknames));
+	   this.allnicknames = val[4]; this.storage.set('player0', createPlayer(this.allnicknames));
+	   });
 
 
-  	   this.storage.set('player2', createPlayer('Billy "Buttermilk" Jackson'));
-  	   this.storage.set('situation', [0,0,0,0,[0,0,0]]);
+  	   this.storage.set('currentSequence', [[12,16],[51,89]]);
+  	   this.storage.set('situation', [0,0,0,1,[0,0,0]]);
   	   this.storage.set('linescore',[[0,0,0,0],[1,0,0],[0,1,0],[1,3,0]]);
   	   this.storage.set('currentPitcher',{'pitch1':{'name':'Fastball','velocity':88,'movement':[20,5],'control':80},'pitch2':{'name':'Curve','velocity':72,'movement':[-20,50],'control':70},'pitch3':{'name':'Slider','velocity':80,'movement':[-40,20],'control':75},'pitch4':{'name':'Changeup','velocity':75,'movement':[30,30],'control':80},'pitch5':{'name':'Splitter','velocity':80,'movement':[5,30],'control':65}});
      });
 
-
+     this.navCtrl.push(GamePage);
   }
 
 }
