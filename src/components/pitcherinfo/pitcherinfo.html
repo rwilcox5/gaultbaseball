@@ -6,14 +6,24 @@
 </td>
 <td>
 
+<table>
+<tr><td>
+<situation></situation>
+</td></tr>
+<tr><td>
+<div id="lastpitch"></div>
+</td></tr>
+<tr><td>
+<div id="lastresult"></div>
+</td></tr></table>
 <ion-list>
   <ion-item>
-    <ion-range min="0" max="10" [(ngModel)]="Velocity" color="secondary">
+    <ion-range min="0" max="10" [(ngModel)]="Velocity" color="secondary" (ionChange)="updateSlider()" style="width:10px;" id="velocitySlider">
     </ion-range>
   </ion-item>
 
   <ion-item>
-    <ion-range min="0" max="100" [(ngModel)]="Movement" color="secondary">
+    <ion-range min="0" max="100" [(ngModel)]="Movement" color="secondary" (ionChange)="updateSlider()" style="width:10px;" id="movementSlider">
     </ion-range>
   </ion-item>
 
@@ -36,11 +46,11 @@ Stamina: 90
 <td><button ion-button on-tap="throw(5)" id="fastball" style="width:95%;">Knunck</button></td>
 </tr>
 <tr>
-<td>85 MPH</td>
-<td>85 MPH</td>
-<td>85 MPH</td>
-<td>85 MPH</td>
-<td>85 MPH</td>
+<td>{{p1Velocity}} MPH</td>
+<td>{{p2Velocity}} MPH</td>
+<td>{{p3Velocity}} MPH</td>
+<td>{{p4Velocity}} MPH</td>
+<td>{{p5Velocity}} MPH</td>
 </tr>
 <tr>
 <td>85 MPH</td>

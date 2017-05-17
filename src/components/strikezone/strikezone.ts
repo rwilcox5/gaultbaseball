@@ -54,6 +54,9 @@ var touchy = 0;
 var pitchvelocity = 1;
 var lastframe = 0;
 var ntimes = 0;
+var hdist = 0;
+var vdist = 0;
+
 
 function stopZone(tx,ty){
 	stopanimate = true;
@@ -104,8 +107,18 @@ function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp
 	let pitchstring = element.innerText || element.textContent;
 	if (pitchstring != 'NOTHING'){
 	startanimate = true;
+    hdist = 20;
+    vdist = 30;
     let pitchn = parseInt(pitchstring);
     let rawvelocity = (pitchn*253*169)%1013;
+    vdist = (pitchn*757*101)%1009;
+    hdist = (pitchn*917*849)%1019;
+    if (rawvelocity<-500){rawvelocity=rawvelocity+1013;}
+    if (rawvelocity>500){rawvelocity=rawvelocity-1013;}
+    if (hdist>500){hdist=hdist-1019;}
+    if (vdist>500){vdist=vdist-1009;}
+    if (hdist<-500){hdist=hdist+1019;}
+    if (vdist<-500){vdist=vdist+1009;}
     let delta = 0;
     if (timestamp>lastframe){
         delta = Math.min((timestamp-lastframe)/16.,5);
@@ -183,10 +196,11 @@ function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp
     
     ctx.fillStyle="#EEEEEE";
     ctx.beginPath();
-	ctx.arc(touchx,touchy,10,0,2*Math.PI);
+	ctx.arc(touchx+hdist,touchy+vdist,10,0,2*Math.PI);
 	ctx.stroke();
 	ctx.fill();
-    myevent.publish('userTap',[touchx,touchy,leftx,topy,szsize]);
+    canvas_arrow(ctx,touchx,touchy,touchx+hdist,touchy+vdist);
+    myevent.publish('userTap',[touchx+hdist,touchy+vdist,leftx,topy,szsize]);
 
 
 	stopanimate = false;
@@ -198,6 +212,17 @@ function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp
     
 
  }
+
+ function canvas_arrow(context, fromx, fromy, tox, toy){
+    var headlen = 10;   // length of head in pixels
+    var angle = Math.atan2(toy-fromy,tox-fromx);
+    context.moveTo(fromx, fromy);
+    context.lineTo(tox, toy);
+    context.lineTo(tox-headlen*Math.cos(angle-Math.PI/6),toy-headlen*Math.sin(angle-Math.PI/6));
+    context.moveTo(tox, toy);
+    context.lineTo(tox-headlen*Math.cos(angle+Math.PI/6),toy-headlen*Math.sin(angle+Math.PI/6));
+    context.stroke();
+}
 
 
 

@@ -16,6 +16,12 @@ export class ScoreboardComponent {
 
   linescoreAway: Array<string>;
   linescoreHome: Array<string>;
+  AwayTeamRuns: number = 0;
+  AwayTeamHits: number = 0;
+  AwayTeamErrors: number = 0;
+  HomeTeamRuns: number = 0;
+  HomeTeamHits: number = 0;
+  HomeTeamErrors: number = 0;
 
   constructor(public storage: Storage, public events: Events) {
   this.linescoreAway = ['0','0','0','0','0','0','0','0','0'];
@@ -25,6 +31,16 @@ export class ScoreboardComponent {
        let i = 0;
        this.linescoreAway = ['0','0','0','0','0','0','0','0','0'];
        this.linescoreHome = ['0','0','0','0','0','0','0','0','0'];
+       val[2][0]=0;
+       for (i=0;i<val[0].length;i++){val[2][0]+=val[0][i];}
+       val[3][0]=0;
+       for (i=0;i<val[1].length;i++){val[3][0]+=val[1][i];}
+       this.AwayTeamRuns = val[2][0];
+       this.AwayTeamHits = val[2][1];
+       this.AwayTeamErrors = val[2][2];
+       this.HomeTeamRuns = val[3][0];
+       this.HomeTeamHits = val[3][1];
+       this.HomeTeamErrors = val[3][2];
        for (i=0;i<val[0].length;i++){
        this.linescoreAway[i] = val[0][i].toString();
        }
@@ -43,6 +59,17 @@ export class ScoreboardComponent {
 
      this.events.subscribe('centralScore', val => {
      let i=0;
+     val[2][0]=0;
+     for (i=0;i<val[0].length;i++){val[2][0]+=val[0][i];}
+     val[3][0]=0;
+     for (i=0;i<val[1].length;i++){val[3][0]+=val[1][i];}
+     this.AwayTeamRuns = val[2][0];
+       this.AwayTeamHits = val[2][1];
+       this.AwayTeamErrors = val[2][2];
+       this.HomeTeamRuns = val[3][0];
+       this.HomeTeamHits = val[3][1];
+       this.HomeTeamErrors = val[3][2];
+     
      for (i=0;i<val[0].length;i++){
        this.linescoreAway[i] = val[0][i].toString();
        }

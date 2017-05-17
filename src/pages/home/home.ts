@@ -23,7 +23,8 @@ export class HomePage {
 
   	   this.storage.set('player2', createPlayer('Billy "Buttermilk" Jackson'));
   	   this.storage.set('situation', [0,0,0,0,[0,0,0]]);
-  	   this.storage.set('linescore',[[0,0,0,0],[1,0,0]]);
+  	   this.storage.set('linescore',[[0,0,0,0],[1,0,0],[0,1,0],[1,3,0]]);
+  	   this.storage.set('currentPitcher',{'pitch1':{'name':'Fastball','velocity':88,'movement':[20,5],'control':80},'pitch2':{'name':'Curve','velocity':72,'movement':[-20,50],'control':70},'pitch3':{'name':'Slider','velocity':80,'movement':[-40,20],'control':75},'pitch4':{'name':'Changeup','velocity':75,'movement':[30,30],'control':80},'pitch5':{'name':'Splitter','velocity':80,'movement':[5,30],'control':65}});
      });
 
 

@@ -20,12 +20,10 @@ export class SituationComponent {
   outsn: number = 0;
   outs: string;
   bases: string;
-  battername: string;
-  today: string;
+  
 
   constructor(public events: Events, storage: Storage) {
     storage.ready().then(() => {
-       storage.get('player1').then((val) => {this.battername = val.name;})
        storage.get('situation').then((val) => {
 
        this.balls = val[0];
@@ -42,7 +40,7 @@ export class SituationComponent {
      });
     console.log('Hello SituationComponent Component');
     this.bases = 'bases';
-    this.today = '2-4 (HR,3B,KK,BB,GO,FO)';
+    
     this.events.subscribe('centralTap', call => {
     this.balls = call[0];
     this.strikes = call[1];
