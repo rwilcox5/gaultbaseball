@@ -23,11 +23,15 @@ export class StrikezoneComponent {
   storage.ready().then(() => {
        abh = [];
        abv = [];
+       abhm = [];
+       abvm = [];
        storage.get('currentSequence').then((val) => {
        let i = 0;
        for (i=0;i<val.length;i++){
            abh.push(val[i][0]);
            abv.push(val[i][1]);
+           abhm.push(val[i][2]);
+           abvm.push(val[i][3]);
        }
        })
        })
@@ -36,11 +40,15 @@ export class StrikezoneComponent {
     storage.ready().then(() => {
        abh = [];
        abv =[];
+       abhm = [];
+       abvm = [];
        storage.get('currentSequence').then((val) => {
        let i = 0;
        for (i=0;i<val.length;i++){
            abh.push(val[i][0]);
            abv.push(val[i][1]);
+           abhm.push(val[i][2]);
+           abvm.push(val[i][3]);
        }
        })
        })
@@ -87,6 +95,8 @@ var hdist = 0;
 var vdist = 0;
 var abh = [];
 var abv = [];
+var abhm = [];
+var abvm = [];
 
 function stopZone(tx,ty){
 	stopanimate = true;
@@ -139,16 +149,23 @@ function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp
     if (pitchstring == 'NOTHING'){
         let i = 0;
         for (i=0;i<abh.length;i++){
-            if (abh[i]>0 && abv[i]>0){
+            if (leftx+abh[i]*szsize/100.>0 && topy+abv[i]*szsize/100.>0){
             let ctx = strikezoneCanvas;
+
+            canvas_arrow(ctx,leftx+abh[i]*szsize/100.-abhm[i]*szsize/100.,topy+abv[i]*szsize/100.-abvm[i]*szsize/100.,leftx+abh[i]*szsize/100.,topy+abv[i]*szsize/100.);
+
+
             ctx.fillStyle="#EEEEEE";
             ctx.beginPath();
+
             ctx.arc(leftx+abh[i]*szsize/100.,topy+abv[i]*szsize/100.,10,0,2*Math.PI);
             ctx.stroke();
             ctx.fill();
             ctx.fillStyle="#000000";
             ctx.font = "18px Arial";
             ctx.fillText((i+1).toString(),leftx+abh[i]*szsize/100.-4,topy+abv[i]*szsize/100.+7);
+
+
         }
         }
     }
@@ -246,8 +263,8 @@ function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp
 	ctx.arc(touchx+hdist,touchy+vdist,10,0,2*Math.PI);
 	ctx.stroke();
 	ctx.fill();
-    canvas_arrow(ctx,touchx,touchy,touchx+hdist,touchy+vdist);
-    myevent.publish('userTap',[touchx+hdist,touchy+vdist,leftx,topy,szsize]);
+
+    myevent.publish('userTap',[touchx+hdist,touchy+vdist,leftx,topy,szsize,hdist,vdist]);
 
 
 	stopanimate = false;

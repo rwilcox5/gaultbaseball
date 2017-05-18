@@ -7,6 +7,7 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
 import { GamePage } from '../pages/game/game';
+import { LineupPage } from '../pages/lineup/lineup';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -26,6 +27,7 @@ import { CentrallogicComponent } from '../components/centrallogic/centrallogic';
     HomePage,
     GamePage,
     ListPage,
+    LineupPage,
     StrikezoneComponent,
     ScoreboardComponent,
     SituationComponent,
@@ -44,6 +46,7 @@ import { CentrallogicComponent } from '../components/centrallogic/centrallogic';
     MyApp,
     HomePage,
     GamePage,
+    LineupPage,
     ListPage
   ],
   providers: [

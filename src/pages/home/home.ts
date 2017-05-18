@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { GamePage } from '../game/game';
@@ -8,12 +8,48 @@ import { GamePage } from '../game/game';
   templateUrl: 'home.html'
 })
 export class HomePage {
+@ViewChild('swingCanvas') swingCanvas;
   storage: Storage;
   allnicknames: string;
+
   constructor(public navCtrl: NavController, storage: Storage) {
 	   this.storage = new Storage(Storage);
 
+
   }
+
+
+loadSwing(){  
+
+  let c = this.swingCanvas.nativeElement;
+	   let ctx = c.getContext('2d');
+	   let ixi = 0; let iyi = 0;
+	   for (ixi=-50;ixi<150;ixi++){
+	   for (iyi=-50;iyi<150;iyi++){
+	   		let swp = Math.floor(swingPercentage(ixi,iyi)*256);
+	   		let tcolor = "#"+toHex(256-swp)+'00'+toHex(swp);
+	   		ctx.fillStyle=tcolor;
+	   		ctx.fillRect(ixi*2+100,iyi*2+100,2,2);
+	   		}
+	   }
+	   for (ixi=-5;ixi<15;ixi++){
+	   for (iyi=-5;iyi<15;iyi++){
+	   		let swp = swingPercentage(ixi*10,iyi*10).toFixed(2);
+	   		ctx.fillStyle='#FFFFFF';
+	   		ctx.font = "10px Arial";
+            ctx.fillText(swp.toString(),ixi*20+100,iyi*20+100);
+	   		}
+	   }
+	   ctx.moveTo(100,100);
+	   ctx.lineTo(300,100);
+	   ctx.lineTo(300,300);
+	   ctx.lineTo(100,300);
+	   ctx.lineTo(100,100);
+	   ctx.stroke();
+
+	   }
+
+
   continueGame(){this.navCtrl.push(GamePage);}
  
   newGame(){
@@ -33,7 +69,7 @@ export class HomePage {
 	   });
 
 
-  	   this.storage.set('currentSequence', [[12,16],[51,89]]);
+  	   this.storage.set('currentSequence', [[12,16,20,5],[51,89,30,10]]);
   	   this.storage.set('situation', [0,0,0,1,[0,0,0]]);
   	   this.storage.set('linescore',[[0,0,0,0],[1,0,0],[0,1,0],[1,3,0]]);
   	   this.storage.set('currentPitcher',{'pitch1':{'name':'Fastball','velocity':88,'movement':[20,5],'control':80},'pitch2':{'name':'Curve','velocity':72,'movement':[-20,50],'control':70},'pitch3':{'name':'Slider','velocity':80,'movement':[-40,20],'control':75},'pitch4':{'name':'Changeup','velocity':75,'movement':[30,30],'control':80},'pitch5':{'name':'Splitter','velocity':80,'movement':[5,30],'control':65}});
@@ -92,5 +128,37 @@ function createPlayer(pname){
     statsLhold['obp'] = (statsLhold.n1b+statsLhold.n2b+statsLhold.n3b+statsLhold.hr+statsLhold.bb+statsLhold.hbp)/statsLhold.pa;
     statsLhold['slg'] = (statsLhold.n1b+2*statsLhold.n2b+3*statsLhold.n3b+4*statsLhold.hr)/statsLhold.ab;
     return {'name':pname,'stats':statshold,'statsL':statsLhold,'statsR':statsRhold,'bats':'R','zones':zoneshold};
+}
+
+function swingPercentage(xL,yL){
+   let maxLocationx = 60;
+   let maxLocationy = 50;
+   let maxValuex = .9;
+   let maxValuey = .9;
+   let n50x = .05;
+   let n50y = .05;
+   let spx = (n50x-maxValuex)/(100)**2*(xL-maxLocationx)**2+maxValuex;
+   let spy = (n50y-maxValuey)/(100)**2*(yL-maxLocationy)**2+maxValuey;
+   let swingPercentage = Math.max(spx*spy,0);
+   return swingPercentage;
+}
+
+function toHex(n){
+	let digit1 = Math.floor(n/16.);
+	let digit2 = n%16;
+	return dth(digit1)+dth(digit2);
+
+}
+
+function dth(n){
+	if (n<10){
+		return n.toString();
+	}
+	else if (n==10) {return 'A';}
+	else if (n==11) {return 'B';}
+	else if (n==12) {return 'C';}
+	else if (n==13) {return 'D';}
+	else if (n==14) {return 'E';}
+	else if (n==15) {return 'F';}
 }
 
