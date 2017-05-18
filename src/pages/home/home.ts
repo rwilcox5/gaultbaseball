@@ -55,21 +55,23 @@ loadSwing(){
   newGame(){
    
 	this.storage.ready().then(() => {
+		this.storage.set('nicknames', ['Apollo','Buttermilk','Catfish','Destroyer','Elephant','Foxy','Gunner','Harpoon','Ikabod']);
 
 	   this.storage.get('nicknames').then((val) => {
-	   this.allnicknames = val[0]; this.storage.set('player1', createPlayer(this.allnicknames));
-	   this.allnicknames = val[1]; this.storage.set('player2', createPlayer(this.allnicknames));
-	   this.allnicknames = val[2]; this.storage.set('player3', createPlayer(this.allnicknames));
-	   this.allnicknames = val[3]; this.storage.set('player4', createPlayer(this.allnicknames));
-	   this.allnicknames = val[4]; this.storage.set('player5', createPlayer(this.allnicknames));
-	   this.allnicknames = val[1]; this.storage.set('player6', createPlayer(this.allnicknames));
-	   this.allnicknames = val[2]; this.storage.set('player7', createPlayer(this.allnicknames));
-	   this.allnicknames = val[3]; this.storage.set('player8', createPlayer(this.allnicknames));
-	   this.allnicknames = val[4]; this.storage.set('player0', createPlayer(this.allnicknames));
+	   let i = 0;
+	   let tlineup = [];
+	   for (i=0;i<9;i++){
+	   this.allnicknames = val[i];
+	   let cPlayer = createPlayer(this.allnicknames);
+	   this.storage.set('player'+(i+1).toString(), cPlayer); tlineup.push({'name':cPlayer.name,'bats':cPlayer.bats,'avg':cPlayer.stats.avg,'obp':cPlayer.stats.obp,'slg':cPlayer.stats.slg,'pa':cPlayer.stats.pa,'hr':cPlayer.stats.hr,'k':cPlayer.stats.k,'bb':cPlayer.stats.bb}); tlineup.push({'name':cPlayer.name,'bats':cPlayer.bats,'avg':cPlayer.statsR.avg,'obp':cPlayer.statsR.obp,'slg':cPlayer.statsR.slg,'pa':cPlayer.statsR.pa,'hr':cPlayer.statsR.hr,'k':cPlayer.statsR.k,'bb':cPlayer.statsR.bb}); tlineup.push({'name':cPlayer.name,'bats':cPlayer.bats,'avg':cPlayer.statsL.avg,'obp':cPlayer.statsL.obp,'slg':cPlayer.statsL.slg,'pa':cPlayer.statsL.pa,'hr':cPlayer.statsL.hr,'k':cPlayer.statsL.k,'bb':cPlayer.statsL.bb});
+	   }
+
+	   this.storage.set('lineup', tlineup);
 	   });
 
 
   	   this.storage.set('currentSequence', [[12,16,20,5],[51,89,30,10]]);
+  	   
   	   this.storage.set('situation', [0,0,0,1,[0,0,0]]);
   	   this.storage.set('linescore',[[0,0,0,0],[1,0,0],[0,1,0],[1,3,0]]);
   	   this.storage.set('currentPitcher',{'pitch1':{'name':'Fastball','velocity':88,'movement':[20,5],'control':80},'pitch2':{'name':'Curve','velocity':72,'movement':[-20,50],'control':70},'pitch3':{'name':'Slider','velocity':80,'movement':[-40,20],'control':75},'pitch4':{'name':'Changeup','velocity':75,'movement':[30,30],'control':80},'pitch5':{'name':'Splitter','velocity':80,'movement':[5,30],'control':65}});

@@ -4,7 +4,7 @@ import { ViewController } from 'ionic-angular';
 import { ModalController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';
-import { LineupPage } from '../lineup/lineup';
+import { LineupPage } from '../../pages/lineup/lineup';
 
 /**
  * Generated class for the InfomenuComponent component.
@@ -26,15 +26,20 @@ export class InfomenuComponent {
     storage.ready().then(() => {
        storage.get('lineup').then((val) => {
        batters = [];
-       		batters.push({'name':'B1','bats':'L','AVG':.311,'OBP':.388,'SLG':.401});
-       		batters.push({'name':'B1','bats':'L','AVG':.311,'OBP':.388,'SLG':.401});
-       		batters.push({'name':'B1','bats':'L','AVG':.311,'OBP':.388,'SLG':.401});
-       		batters.push({'name':'B1','bats':'L','AVG':.311,'OBP':.388,'SLG':.401});
-       		batters.push({'name':'B1','bats':'L','AVG':.311,'OBP':.388,'SLG':.401});
-       		batters.push({'name':'B1','bats':'L','AVG':.311,'OBP':.388,'SLG':.401});
-       		batters.push({'name':'B1','bats':'L','AVG':.311,'OBP':.388,'SLG':.401});
-       		batters.push({'name':'B1','bats':'L','AVG':.311,'OBP':.388,'SLG':.401});
-       		batters.push({'name':'B1','bats':'L','AVG':.311,'OBP':.388,'SLG':.401});
+       let ii = 0;
+       		for (ii=0;ii<27;ii++){
+       		let i = 0;
+       		if (ii<9){i=ii*3;}
+       		else if (ii<18){i=(ii-9)*3+1}
+       		else if (ii<27){i=(ii-18)*3+2}
+       		let tempavg = val[i].avg.toFixed(3).substring(1,);
+       		let tempobp = val[i].obp.toFixed(3).substring(1,);
+       		let tempslg = val[i].slg.toFixed(3).substring(1,);
+       		if (val[i].avg>= 1){tempavg = val[i].avg.toFixed(3)}
+       		if (val[i].obp>= 1){tempobp = val[i].obp.toFixed(3)}
+       		if (val[i].slg>= 1){tempslg = val[i].slg.toFixed(3)}
+       		batters.push({'name':val[i].name,'bats':val[i].bats,'AVG':tempavg,'OBP':tempobp,'SLG':tempslg,'pa':val[i].pa,'hr':val[i].hr,'k':val[i].k,'bb':val[i].bb});
+       		}
        })
     })
 
@@ -73,16 +78,11 @@ export class InfomenuComponent {
   });
   alert.present();
   }
-presentLineup() {
-  let i = 0;
-  let battersLineup = '<table><tr><td>Name</td><td>Bats</td><td>AVG</td><td>OBP</td><td>SLG</td>';
-  for (i=0;i<9;i++){
-  battersLineup = battersLineup.concat('<tr><td>'+batters[i].name+'</td><td>'+batters[i].bats+'</td><td>'+batters[i].AVG.toString()+'</td><td>'+batters[i].OBP.toString()+'</td><td>'+batters[i].SLG.toString()+'</td></tr>');
-  }
-  battersLineup = battersLineup.concat('</table>');
+presentStats() {
+
   let alert = this.alertCtrl.create({
     title: 'Lineup',
-    subTitle: battersLineup,
+    subTitle: 'Hiya',
     buttons: ['Dismiss']
   });
   alert.present();
@@ -95,8 +95,31 @@ presentLineup() {
   });
   alert.present();
   }
-  presentStats() {
-    let myModal = this.modalCtrl.create(LineupPage);
+  presentLineup() {
+
+  let i = 0;
+
+  let tnames = [];  let tbats = [];  let tavgs = [];  let tobps = [];  let tslgs = [];  let tpas = [];  let thrs = [];  let tks = [];  let tbbs = [];
+  for (i=0;i<9;i++){
+  tnames.push(batters[i].name);  tbats.push(batters[i].bats);  tavgs.push(batters[i].AVG);  tobps.push(batters[i].OBP);  tslgs.push(batters[i].SLG);  tpas.push(batters[i].pa);  thrs.push(batters[i].hr); tks.push(batters[i].k);  tbbs.push(batters[i].bb);
+  }
+  let allstats = {'place':5,'names':tnames,'bats':tbats,'avgs':tavgs,'obps':tobps,'slgs':tslgs,'pas':tpas,'hrs':thrs,'ks':tks,'bbs':tbbs};
+
+  tnames = [];  tbats = [];  tavgs = [];  tobps = [];  tslgs = [];  tpas = [];  thrs = [];  tks = [];  tbbs = [];
+  for (i=9;i<18;i++){
+  tnames.push(batters[i].name);  tbats.push(batters[i].bats);  tavgs.push(batters[i].AVG);  tobps.push(batters[i].OBP);  tslgs.push(batters[i].SLG);  tpas.push(batters[i].pa);  thrs.push(batters[i].hr); tks.push(batters[i].k);  tbbs.push(batters[i].bb);
+  }
+  let Rstats = {'place':5,'names':tnames,'bats':tbats,'avgs':tavgs,'obps':tobps,'slgs':tslgs,'pas':tpas,'hrs':thrs,'ks':tks,'bbs':tbbs};
+
+  tnames = [];  tbats = [];  tavgs = [];  tobps = [];  tslgs = [];  tpas = [];  thrs = [];  tks = [];  tbbs = [];
+  for (i=18;i<27;i++){
+  tnames.push(batters[i].name);  tbats.push(batters[i].bats);  tavgs.push(batters[i].AVG);  tobps.push(batters[i].OBP);  tslgs.push(batters[i].SLG);  tpas.push(batters[i].pa);  thrs.push(batters[i].hr); tks.push(batters[i].k);  tbbs.push(batters[i].bb);
+  }
+  let Lstats = {'place':5,'names':tnames,'bats':tbats,'avgs':tavgs,'obps':tobps,'slgs':tslgs,'pas':tpas,'hrs':thrs,'ks':tks,'bbs':tbbs};
+
+  let bobj = {'all':allstats,'r':Rstats,'l':Lstats};
+
+    let myModal = this.modalCtrl.create(LineupPage, bobj);
     myModal.present();
   }
 
