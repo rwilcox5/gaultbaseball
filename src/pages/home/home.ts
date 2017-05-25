@@ -2,23 +2,53 @@ import { Component, ViewChild } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { GamePage } from '../game/game';
+import { Bust27Page } from '../bust27/bust27';
+import { NothingPage } from '../nothing/nothing';
+import { SavePage } from '../save/save';
+import { NobreaksPage } from '../nobreaks/nobreaks';
+import { CreateteamPage } from '../createteam/createteam';
+import { EditteamPage } from '../editteam/editteam';
+import { ViewteamPage } from '../viewteam/viewteam';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
-@ViewChild('swingCanvas') swingCanvas;
+private oppOffense = 50;
+
   storage: Storage;
   allnicknames: string;
+  oppPitcher: number = 50;
+  myOffense: number = 50;
+  myPitcher: number = 50;
+  teams: Array<object> = [];
 
   constructor(public navCtrl: NavController, storage: Storage) {
 	   this.storage = new Storage(Storage);
+	   console.log(this.myPitcher);
+
+	   this.storage.ready().then(() => {
+	this.storage.get('teamList').then((idval) => {
+	
+	let i =0;
+	for (i=0;i<idval.length;i++){
+	console.log(idval[i]);
+	this.storage.get(idval[i]).then((teamval) => {console.log(teamval.name); this.teams.push(teamval);})
+	}
+	
+	
+	})
+
+		})
+
+
+	   
 
 
   }
 
-
+/**
 loadSwing(){  
 
   let c = this.swingCanvas.nativeElement;
@@ -26,7 +56,7 @@ loadSwing(){
 	   let ixi = 0; let iyi = 0;
 	   for (ixi=-50;ixi<150;ixi++){
 	   for (iyi=-50;iyi<150;iyi++){
-	   		let swp = Math.floor(swingPercentage(ixi,iyi)*256);
+	   		let swp = Math.floor(swingPercentage([50,50,.9,.9,.05,.05],ixi,iyi)*256);
 	   		let tcolor = "#"+toHex(256-swp)+'00'+toHex(swp);
 	   		ctx.fillStyle=tcolor;
 	   		ctx.fillRect(ixi*2+100,iyi*2+100,2,2);
@@ -34,7 +64,7 @@ loadSwing(){
 	   }
 	   for (ixi=-5;ixi<15;ixi++){
 	   for (iyi=-5;iyi<15;iyi++){
-	   		let swp = swingPercentage(ixi*10,iyi*10).toFixed(2);
+	   		let swp = swingPercentage([50,50,.9,.9,.05,.05],ixi*10,iyi*10).toFixed(2);
 	   		ctx.fillStyle='#FFFFFF';
 	   		ctx.font = "10px Arial";
             ctx.fillText(swp.toString(),ixi*20+100,iyi*20+100);
@@ -48,11 +78,86 @@ loadSwing(){
 	   ctx.stroke();
 
 	   }
+**/
 
 
-  continueGame(){this.navCtrl.push(GamePage);}
- 
-  newGame(){
+  continueGame(){
+	this.storage.ready().then(() => {
+		this.storage.set('gametype','');
+		})
+  	this.navCtrl.push(GamePage);}
+
+  bust27(){
+	this.storage.ready().then(() => {
+		this.storage.set('gametype','27');
+		})
+
+  	this.navCtrl.push(Bust27Page);}
+
+  nothing(){
+  	this.storage.ready().then(() => {
+		this.storage.set('gametype','nothing');
+		})
+		this.navCtrl.push(NothingPage);}
+
+  save(){
+	this.newGame('save',[[0,0,0,0,0,0,0,0,0],[1,0,0,0,0,0,0,0],[0,1,0],[1,3,0]],[2,0,0,1,[0,1,1]]);
+    this.storage.ready().then(() => {
+		this.storage.set('gametype','save');
+		})
+		this.navCtrl.push(SavePage);}
+
+  nobreaks(){
+	this.newGame('nobreaks',[[0,0,0,0,0,0],[1,0,0,0,0],[0,1,0],[1,3,0]],[2,0,0,1,[0,1,1]]);
+    this.storage.ready().then(() => {
+		this.storage.set('gametype','nobreaks');
+		})
+		this.navCtrl.push(NobreaksPage);}
+ 	
+  createTeam(name='Frisco Friars', batterLevel=3,pitcherLevel=3){
+	let i = 0;
+	let batters = [];
+	for (i=0;i<14;i++){
+		batters.push(createPlayer('Billson'));
+	}
+	let pitchers = [];
+	for (i=0;i<11;i++){
+		pitchers.push(createPitcher('Aiden'));
+	}
+
+	let teamId = 'team0';
+	let tList = [teamId];
+	this.storage.ready().then(() => {
+	this.storage.get('teamList').then((val) => {
+	if (val != null){
+	if (val.length>0){
+	teamId = 'team'+(parseInt(val[val.length-1].substr(4,))+1).toString();
+	tList = val;
+	tList.push(teamId);
+	}
+	}
+		this.storage.set(teamId, {'teamId':teamId,'name':name,'batters':batters,'pitchers':pitchers});
+		this.storage.set('teamList',tList);
+		this.teams.push({'teamId':teamId,'name':name,'batters':batters,'pitchers':pitchers});
+		})
+		})
+	this.navCtrl.push(CreateteamPage);
+	}
+
+  viewTeam(){
+	this.storage.ready().then(() => {
+	this.storage.get('teamList').then((val) => {
+	console.log(val);
+	})
+
+		})
+	}
+
+  newGame(gtype,linescoreInit=[[0],[],[0,0,0],[0,0,0]],situationInit=[0,0,0,1,[0,0,0]],pitcherInit=createPitcher('Jack')){
+  	console.log(pitcherInit.pitch1.name);
+  	this.storage.ready().then(() => {
+		this.storage.set('gametype',gtype);
+		})
    
 	this.storage.ready().then(() => {
 		this.storage.set('nicknames', ['Apollo','Buttermilk','Catfish','Destroyer','Elephant','Foxy','Gunner','Harpoon','Ikabod']);
@@ -70,16 +175,30 @@ loadSwing(){
 	   });
 
 
-  	   this.storage.set('currentSequence', [[12,16,20,5],[51,89,30,10]]);
+  	   this.storage.set('currentSequence'+gtype, []);
   	   
-  	   this.storage.set('situation', [0,0,0,1,[0,0,0]]);
-  	   this.storage.set('linescore',[[0,0,0,0],[1,0,0],[0,1,0],[1,3,0]]);
-  	   this.storage.set('currentPitcher',{'pitch1':{'name':'Fastball','velocity':88,'movement':[20,5],'control':80},'pitch2':{'name':'Curve','velocity':72,'movement':[-20,50],'control':70},'pitch3':{'name':'Slider','velocity':80,'movement':[-40,20],'control':75},'pitch4':{'name':'Changeup','velocity':75,'movement':[30,30],'control':80},'pitch5':{'name':'Splitter','velocity':80,'movement':[5,30],'control':65}});
+  	   this.storage.set('situation'+gtype, situationInit);
+  	   this.storage.set('linescore'+gtype,linescoreInit);
+  	   this.storage.set('currentPitcher'+gtype,pitcherInit);
      });
-
+     if (gtype==''){
      this.navCtrl.push(GamePage);
+     }
   }
 
+}
+
+
+function createPitcher(pname){
+	let pitch1 = {'name':'Fastball','velocity':88,'movement':[20,5],'control':80}; let pitch2 = {'name':'Fastball','velocity':88,'movement':[20,5],'control':80}; let pitch3 = {'name':'Fastball','velocity':88,'movement':[20,5],'control':80}; let pitch4 = {'name':'Fastball','velocity':88,'movement':[20,5],'control':80}; let pitch5 = {'name':'Fastball','velocity':88,'movement':[20,5],'control':80};
+
+	pitch1 = {'name':'Fastball','velocity':88,'movement':[20,5],'control':80};
+	pitch2 = {'name':'Changeup','velocity':75,'movement':[30,30],'control':80};
+	pitch3 = {'name':'Slider','velocity':80,'movement':[-40,20],'control':75};
+	/** pitch4 = {'name':'Curve','velocity':72,'movement':[-20,50],'control':70};
+	pitch5 = {'name':'Splitter','velocity':80,'movement':[5,30],'control':65}; **/
+
+	return {'name':pname,'numPitches':3,'pitch1':pitch1,'pitch2':pitch2,'pitch3':pitch3,'pitch4':pitch4,'pitch5':pitch5};
 }
 
 function createPlayer(pname){
@@ -129,18 +248,20 @@ function createPlayer(pname){
     statsLhold['avg'] = (statsLhold.n1b+statsLhold.n2b+statsLhold.n3b+statsLhold.hr)/statsLhold.ab;
     statsLhold['obp'] = (statsLhold.n1b+statsLhold.n2b+statsLhold.n3b+statsLhold.hr+statsLhold.bb+statsLhold.hbp)/statsLhold.pa;
     statsLhold['slg'] = (statsLhold.n1b+2*statsLhold.n2b+3*statsLhold.n3b+4*statsLhold.hr)/statsLhold.ab;
-    return {'name':pname,'stats':statshold,'statsL':statsLhold,'statsR':statsRhold,'bats':'R','zones':zoneshold};
+
+    let maxLocationx = 50;
+    let maxLocationy = 50;
+    let maxValuex = .9;
+    let maxValuey = .9;
+    let minValuex = .05;
+    let minValuey = .05;
+    let swingMap = [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
+    return {'name':pname,'stats':statshold,'statsL':statsLhold,'statsR':statsRhold,'bats':'R','zones':zoneshold, 'swingMap':swingMap};
 }
 
-function swingPercentage(xL,yL){
-   let maxLocationx = 60;
-   let maxLocationy = 50;
-   let maxValuex = .9;
-   let maxValuey = .9;
-   let n50x = .05;
-   let n50y = .05;
-   let spx = (n50x-maxValuex)/(100)**2*(xL-maxLocationx)**2+maxValuex;
-   let spy = (n50y-maxValuey)/(100)**2*(yL-maxLocationy)**2+maxValuey;
+function swingPercentage([maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey],xL,yL){
+   let spx = (minValuex-maxValuex)/(100)**2*(xL-maxLocationx)**2+maxValuex;
+   let spy = (minValuey-maxValuey)/(100)**2*(yL-maxLocationy)**2+maxValuey;
    let swingPercentage = Math.max(spx*spy,0);
    return swingPercentage;
 }

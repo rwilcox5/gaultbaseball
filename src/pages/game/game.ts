@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { Storage } from '@ionic/storage';
 
 /**
  * Generated class for the GamePage page.
@@ -17,15 +16,8 @@ import { Storage } from '@ionic/storage';
 
 export class GamePage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, storage: Storage) {
-  		storage.ready().then(() => {
+  constructor(public navCtrl: NavController, public navParams: NavParams) {
 
-
-
-       storage.get('player1').then((val) => {
-         console.log(val.name);
-       })
-     });
   }
 
   ionViewDidLoad() {

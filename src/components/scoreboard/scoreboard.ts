@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';
 
 /**
@@ -23,39 +22,9 @@ export class ScoreboardComponent {
   HomeTeamHits: number = 0;
   HomeTeamErrors: number = 0;
 
-  constructor(public storage: Storage, public events: Events) {
+  constructor(public events: Events) {
   this.linescoreAway = ['0','0','0','0','0','0','0','0','0'];
   this.linescoreHome = ['0','0','0','0','0','0','0','0','0'];
-  storage.ready().then(() => {
-       storage.get('linescore').then((val) => {
-       let i = 0;
-       this.linescoreAway = ['0','0','0','0','0','0','0','0','0'];
-       this.linescoreHome = ['0','0','0','0','0','0','0','0','0'];
-       val[2][0]=0;
-       for (i=0;i<val[0].length;i++){val[2][0]+=val[0][i];}
-       val[3][0]=0;
-       for (i=0;i<val[1].length;i++){val[3][0]+=val[1][i];}
-       this.AwayTeamRuns = val[2][0];
-       this.AwayTeamHits = val[2][1];
-       this.AwayTeamErrors = val[2][2];
-       this.HomeTeamRuns = val[3][0];
-       this.HomeTeamHits = val[3][1];
-       this.HomeTeamErrors = val[3][2];
-       for (i=0;i<val[0].length;i++){
-       this.linescoreAway[i] = val[0][i].toString();
-       }
-       for (i=val[0].length;i<9;i++){
-       this.linescoreAway[i] = ' ';
-       }
-       for (i=0;i<val[1].length;i++){
-       this.linescoreHome[i] = val[1][i].toString();
-       }
-       for (i=val[1].length;i<9;i++){
-       this.linescoreHome[i] = ' ';
-       }
-
-       })
-     });
 
      this.events.subscribe('centralScore', val => {
      let i=0;
@@ -69,7 +38,7 @@ export class ScoreboardComponent {
        this.HomeTeamRuns = val[3][0];
        this.HomeTeamHits = val[3][1];
        this.HomeTeamErrors = val[3][2];
-     
+     if (val[0].length<10){
      for (i=0;i<val[0].length;i++){
        this.linescoreAway[i] = val[0][i].toString();
        }
@@ -81,6 +50,16 @@ export class ScoreboardComponent {
        }
        for (i=val[1].length;i<9;i++){
        this.linescoreHome[i] = ' ';
+       }
+       }
+       else{
+       for (i=val[0].length-9;i<val[0].length;i++){
+       this.linescoreAway[i-val[0].length+9] = val[0][i].toString();
+       }
+       for (i=val[0].length-9;i<val[1].length;i++){
+       this.linescoreHome[i-val[0].length+9] = val[1][i].toString();
+       }
+       if (val[1].length<val[0].length){this.linescoreHome[8] = ' ';}
        }
 
     });

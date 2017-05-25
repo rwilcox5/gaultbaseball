@@ -18,13 +18,13 @@
 		<tr><td>
 		<ion-list>
 		  <ion-item no-lines>
-		    <ion-range min="0" max="10" [(ngModel)]="Velocity" color="secondary" (ionChange)="updateSlider()" style="width:10px;" id="velocitySlider">
+		    <ion-range min="20" max="80" [(ngModel)]="Velocity" color="secondary" (ionChange)="updateSlider()" style="width:10px;" id="velocitySlider">
 		    <ion-icon small range-left>V</ion-icon>
 		    </ion-range>
 		  </ion-item>
 
 		  <ion-item no-lines>
-		    <ion-range min="0" max="100" [(ngModel)]="Movement" color="secondary" (ionChange)="updateSlider()" style="width:10px;" id="movementSlider">
+		    <ion-range min="20" max="80" [(ngModel)]="Movement" color="secondary" (ionChange)="updateSlider()" style="width:10px;" id="movementSlider">
 		    <ion-icon small range-left>M</ion-icon>
 		    </ion-range>
 		  </ion-item>
@@ -45,25 +45,25 @@
 
 		<table style="table-layout:fixed; width:100%;">
 		<tr>
-		<td><button ion-button on-tap="throw(1)" id="fastball" style="width:95%;">Fastball</button></td>
-		<td><button ion-button on-tap="throw(2)" id="fastball" style="width:95%;">Curve</button></td>
-		<td><button ion-button on-tap="throw(3)" id="fastball" style="width:95%;">Slider</button></td>
-		<td><button ion-button on-tap="throw(4)" id="fastball" style="width:95%;">Change</button></td>
-		<td><button ion-button on-tap="throw(5)" id="fastball" style="width:95%;">Knunck</button></td>
+		<td id="pitch1n"><button ion-button on-tap="throw(1)" style="width:95%;">{{p1name}}</button></td>
+		<td id="pitch2n"><button ion-button on-tap="throw(2)" style="width:95%;">{{p2name}}</button></td>
+		<td id="pitch3n"><button ion-button on-tap="throw(3)" style="width:95%;">{{p3name}}</button></td>
+		<td id="pitch4n"><button ion-button on-tap="throw(4)" style="width:95%;">{{p4name}}</button></td>
+		<td  id="pitch5n"><button ion-button on-tap="throw(5)" style="width:95%;">{{p5name}}</button></td>
 		</tr>
 		<tr>
-		<td>{{p1Velocity}} MPH</td>
-		<td>{{p2Velocity}} MPH</td>
-		<td>{{p3Velocity}} MPH</td>
-		<td>{{p4Velocity}} MPH</td>
-		<td>{{p5Velocity}} MPH</td>
+		<td id="pitch1v">{{p1Velocity}}</td>
+		<td id="pitch2v">{{p2Velocity}}</td>
+		<td id="pitch3v">{{p3Velocity}}</td>
+		<td id="pitch4v">{{p4Velocity}}</td>
+		<td id="pitch5v">{{p5Velocity}}</td>
 		</tr>
 		<tr>
-		<td>85 MPH</td>
-		<td>85 MPH</td>
-		<td>85 MPH</td>
-		<td>85 MPH</td>
-		<td>85 MPH</td>
+		<td id="pitch1c">{{p1Control}}</td>
+		<td id="pitch2c">{{p2Control}}</td>
+		<td id="pitch3c">{{p3Control}}</td>
+		<td id="pitch4c">{{p4Control}}</td>
+		<td id="pitch5c">{{p5Control}}</td>
 		</tr>
 		<tr>
 		<td><canvas height="80" width="80" style="border:1px solid #d3d3d3;" id="pitch1"></canvas></td>

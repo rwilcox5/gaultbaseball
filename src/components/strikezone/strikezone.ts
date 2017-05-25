@@ -1,6 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
 import { Events } from 'ionic-angular';
-import { Storage } from '@ionic/storage';
 
 /**
  * Generated class for the StrikezoneComponent component.
@@ -18,40 +17,24 @@ import { Storage } from '@ionic/storage';
 export class StrikezoneComponent {
   @ViewChild('strikezoneCanvas') strikezoneCanvas;
 
-  constructor(public events: Events, storage: Storage) {
+  constructor(public events: Events) {
     
-  storage.ready().then(() => {
-       abh = [];
-       abv = [];
-       abhm = [];
-       abvm = [];
-       storage.get('currentSequence').then((val) => {
-       let i = 0;
-       for (i=0;i<val.length;i++){
-           abh.push(val[i][0]);
-           abv.push(val[i][1]);
-           abhm.push(val[i][2]);
-           abvm.push(val[i][3]);
-       }
-       })
-       })
 
-  this.events.subscribe('centralTap', val => {
-    storage.ready().then(() => {
+
+  this.events.subscribe('centralSequence', val => {
+
+       let i = 0;
        abh = [];
        abv =[];
        abhm = [];
        abvm = [];
-       storage.get('currentSequence').then((val) => {
-       let i = 0;
        for (i=0;i<val.length;i++){
            abh.push(val[i][0]);
            abv.push(val[i][1]);
            abhm.push(val[i][2]);
            abvm.push(val[i][3]);
        }
-       })
-       })
+
   })
   }
 
@@ -67,7 +50,7 @@ export class StrikezoneComponent {
         let physicalScreenW = myelement.getBoundingClientRect().width;
         this.strikezoneCanvas.nativeElement.width = physicalScreenW*.67-10;
         this.strikezoneCanvas.nativeElement.height = physicalScreenW*.67-10;
-        let szsize = 125./300.*(physicalScreenW*.67-10);
+        let szsize = 100./300.*(physicalScreenW*.67-10);
         let last10 = [[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0]]
         drawZone(this.strikezoneCanvas.nativeElement.getContext('2d'),szsize,(physicalScreenW*.67-10)/2.-szsize/2.,(physicalScreenW*.67-10)/2.-szsize/2.,this.strikezoneCanvas.nativeElement.width,this.strikezoneCanvas.nativeElement.height,true,0,last10);
         myevent = this.events;
@@ -105,7 +88,7 @@ function stopZone(tx,ty){
 }
 
 function update(leftx,topy,pitchvelocity,maxx,maxy,szsize,last10){
-    let buffer = szsize/3.;
+    let buffer = szsize/4.;
     if (leftx+pitchvelocity < maxx-szsize-buffer){
         if (leftx-pitchvelocity > buffer){
             let randx = Math.random();
@@ -155,13 +138,15 @@ function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp
             canvas_arrow(ctx,leftx+abh[i]*szsize/100.-abhm[i]*szsize/100.,topy+abv[i]*szsize/100.-abvm[i]*szsize/100.,leftx+abh[i]*szsize/100.,topy+abv[i]*szsize/100.);
 
 
-            ctx.fillStyle="#EEEEEE";
+            ctx.fillStyle="#FF0000";
+            ctx.strokeStyle="#FF0000";
             ctx.beginPath();
 
             ctx.arc(leftx+abh[i]*szsize/100.,topy+abv[i]*szsize/100.,10,0,2*Math.PI);
             ctx.stroke();
             ctx.fill();
             ctx.fillStyle="#000000";
+            ctx.strokeStyle="#000000";
             ctx.font = "18px Arial";
             ctx.fillText((i+1).toString(),leftx+abh[i]*szsize/100.-4,topy+abv[i]*szsize/100.+7);
 
@@ -188,7 +173,8 @@ function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp
         delta = Math.min((timestamp-lastframe)/16.,5);
         lastframe=timestamp;
     }
-    let rawtimes = delta*(rawvelocity+10.)/5.;
+
+    let rawtimes = delta*(.5+(rawvelocity)/66.);
     let ftimes = Math.floor(rawtimes);
     if (Math.random()<rawtimes-ftimes){
         ntimes = ftimes+1;
@@ -196,6 +182,7 @@ function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp
     else{
         ntimes = ftimes;
     }
+
     pitchvelocity = 1;
 	}
     let ctx = strikezoneCanvas;
@@ -258,11 +245,14 @@ function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp
     ctx.closePath();
 
     
-    ctx.fillStyle="#EEEEEE";
+    ctx.fillStyle="#FF0000";
+    ctx.strokeStyle="#FF0000";
     ctx.beginPath();
 	ctx.arc(touchx+hdist,touchy+vdist,10,0,2*Math.PI);
 	ctx.stroke();
 	ctx.fill();
+    ctx.fillStyle="#000000";
+    ctx.strokeStyle="#000000";
 
     myevent.publish('userTap',[touchx+hdist,touchy+vdist,leftx,topy,szsize,hdist,vdist]);
 

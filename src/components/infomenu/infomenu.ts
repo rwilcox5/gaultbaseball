@@ -4,7 +4,7 @@ import { ViewController } from 'ionic-angular';
 import { ModalController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';
-import { LineupPage } from '../../pages/lineup/lineup';
+import { LineupPage } from '../lineup/lineup';
 
 /**
  * Generated class for the InfomenuComponent component.
