@@ -13,18 +13,7 @@
   <button ion-button on-tap="createTeam()" id="continueGame">Create Team</button>
   <button ion-button on-tap="editTeam()" id="continueGame">Edit Team</button>
   <button ion-button on-tap="viewTeam()" id="continueGame">View Team</button>
-  <ion-item>
-  <ion-label>Choose Opponent</ion-label>
-  <ion-select [(ngModel)]="opponent">
-    <ion-option *ngFor="let team of teams" value="{{team.teamId}}">{{team.name}}</ion-option>
-  </ion-select>
-</ion-item>
-<ion-item>
-  <ion-label>Choose Your Team</ion-label>
-  <ion-select [(ngModel)]="myteam">
-    <ion-option *ngFor="let team of teams" value="{{team.teamId}}">{{team.name}}</ion-option>
-  </ion-select>
-</ion-item>
+
 
 
 <!--<ion-list>

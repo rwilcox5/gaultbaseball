@@ -17,6 +17,7 @@ import { TutorialPage } from '../pages/tutorial/tutorial';
 import { CreateteamPage } from '../pages/createteam/createteam';
 import { EditteamPage } from '../pages/editteam/editteam';
 import { ViewteamPage } from '../pages/viewteam/viewteam';
+import { CreategamePage } from '../pages/creategame/creategame';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -46,6 +47,7 @@ import { CentrallogicComponent } from '../components/centrallogic/centrallogic';
     CreateteamPage,
     EditteamPage,
     ViewteamPage,
+    CreategamePage,
     StrikezoneComponent,
     ScoreboardComponent,
     SituationComponent,
@@ -75,6 +77,7 @@ import { CentrallogicComponent } from '../components/centrallogic/centrallogic';
     CreateteamPage,
     EditteamPage,
     ViewteamPage,
+    CreategamePage,
 
   ],
   providers: [

@@ -9,6 +9,7 @@ import { NobreaksPage } from '../nobreaks/nobreaks';
 import { CreateteamPage } from '../createteam/createteam';
 import { EditteamPage } from '../editteam/editteam';
 import { ViewteamPage } from '../viewteam/viewteam';
+import { CreategamePage } from '../creategame/creategame';
 
 @Component({
   selector: 'page-home',
@@ -33,8 +34,7 @@ private oppOffense = 50;
 	
 	let i =0;
 	for (i=0;i<idval.length;i++){
-	console.log(idval[i]);
-	this.storage.get(idval[i]).then((teamval) => {console.log(teamval.name); this.teams.push(teamval);})
+	this.storage.get(idval[i]).then((teamval) => { this.teams.push(teamval);})
 	}
 	
 	
@@ -115,32 +115,7 @@ loadSwing(){
 		this.navCtrl.push(NobreaksPage);}
  	
   createTeam(name='Frisco Friars', batterLevel=3,pitcherLevel=3){
-	let i = 0;
-	let batters = [];
-	for (i=0;i<14;i++){
-		batters.push(createPlayer('Billson'));
-	}
-	let pitchers = [];
-	for (i=0;i<11;i++){
-		pitchers.push(createPitcher('Aiden'));
-	}
 
-	let teamId = 'team0';
-	let tList = [teamId];
-	this.storage.ready().then(() => {
-	this.storage.get('teamList').then((val) => {
-	if (val != null){
-	if (val.length>0){
-	teamId = 'team'+(parseInt(val[val.length-1].substr(4,))+1).toString();
-	tList = val;
-	tList.push(teamId);
-	}
-	}
-		this.storage.set(teamId, {'teamId':teamId,'name':name,'batters':batters,'pitchers':pitchers});
-		this.storage.set('teamList',tList);
-		this.teams.push({'teamId':teamId,'name':name,'batters':batters,'pitchers':pitchers});
-		})
-		})
 	this.navCtrl.push(CreateteamPage);
 	}
 
@@ -154,6 +129,10 @@ loadSwing(){
 	}
 
   newGame(gtype,linescoreInit=[[0],[],[0,0,0],[0,0,0]],situationInit=[0,0,0,1,[0,0,0]],pitcherInit=createPitcher('Jack')){
+  if (gtype==''){
+     this.navCtrl.push(CreategamePage);
+     }
+    else{
   	console.log(pitcherInit.pitch1.name);
   	this.storage.ready().then(() => {
 		this.storage.set('gametype',gtype);
@@ -181,9 +160,8 @@ loadSwing(){
   	   this.storage.set('linescore'+gtype,linescoreInit);
   	   this.storage.set('currentPitcher'+gtype,pitcherInit);
      });
-     if (gtype==''){
-     this.navCtrl.push(GamePage);
      }
+     
   }
 
 }
