@@ -16,6 +16,8 @@ import { CreategamePage } from '../creategame/creategame';
   templateUrl: 'home.html'
 })
 export class HomePage {
+@ViewChild('swingCanvas') swingCanvas;
+
 private oppOffense = 50;
 
   storage: Storage;
@@ -48,7 +50,7 @@ private oppOffense = 50;
 
   }
 
-/**
+
 loadSwing(){  
 
   let c = this.swingCanvas.nativeElement;
@@ -56,18 +58,32 @@ loadSwing(){
 	   let ixi = 0; let iyi = 0;
 	   for (ixi=-50;ixi<150;ixi++){
 	   for (iyi=-50;iyi<150;iyi++){
-	   		let swp = Math.floor(swingPercentage([50,50,.9,.9,.05,.05],ixi,iyi)*256);
-	   		let tcolor = "#"+toHex(256-swp)+'00'+toHex(swp);
+	   		let swp = Math.floor(swingPercentage([50,50,.92,.92,.06,.06],ixi,iyi)*256);
+	   		let cp = Math.floor(swingPercentage([50,30,.92,.92,.2,.2],ixi,iyi)*256);
+	   		let inp = Math.floor(swingPercentage([50,40,.8,.8,.05,.05],ixi,iyi)*256);
+	   		let sp = Math.floor(swingPercentage([50,60,.45,.45,.1,.025],ixi,iyi)*256);
+	   		let dp = Math.floor(swingPercentage([50,50,.25,.25,.1,.014],ixi,iyi)*256);
+	   		let tp = Math.floor(swingPercentage([50,50,.08,.08,.1,.005],ixi,iyi)*256);
+	   		let hp = Math.floor(swingPercentage([50,40,.24,.24,.025,.01],ixi,iyi)*256);
+
+	   		let tcolor = "#"+toHex(256-swp*cp*inp*(sp+dp*2+tp*3+hp*4))+'00'+toHex(swp*cp*inp*(sp+dp*2+tp*3+hp*4));
 	   		ctx.fillStyle=tcolor;
 	   		ctx.fillRect(ixi*2+100,iyi*2+100,2,2);
 	   		}
 	   }
 	   for (ixi=-5;ixi<15;ixi++){
 	   for (iyi=-5;iyi<15;iyi++){
-	   		let swp = swingPercentage([50,50,.9,.9,.05,.05],ixi*10,iyi*10).toFixed(2);
+	   		let swp = swingPercentage([50,50,.92,.92,.06,.06],ixi*10,iyi*10);
+	   		let cp = swingPercentage([50,30,.92,.92,.2,.2],ixi*10,iyi*10);
+	   		let inp = swingPercentage([50,40,.8,.8,.05,.05],ixi*10,iyi*10);
+	   		let sp = swingPercentage([50,50,.45,.45,.1,.025],ixi*10,iyi*10);
+	   		let dp = swingPercentage([50,50,.25,.25,.1,.014],ixi*10,iyi*10);
+	   		let tp = swingPercentage([50,50,.08,.08,.1,.005],ixi*10,iyi*10);
+	   		let hp = swingPercentage([50,50,.24,.24,.025,.01],ixi*10,iyi*10);
+	   		let slgp = (swp*cp*inp*(sp+dp*2+tp*3+hp*4)).toFixed(2);
 	   		ctx.fillStyle='#FFFFFF';
 	   		ctx.font = "10px Arial";
-            ctx.fillText(swp.toString(),ixi*20+100,iyi*20+100);
+            ctx.fillText(slgp.toString(),ixi*20+100,iyi*20+100);
 	   		}
 	   }
 	   ctx.moveTo(100,100);
@@ -78,7 +94,7 @@ loadSwing(){
 	   ctx.stroke();
 
 	   }
-**/
+
 
 
   continueGame(){
@@ -115,6 +131,7 @@ loadSwing(){
 		this.navCtrl.push(NobreaksPage);}
  	
   createTeam(name='Frisco Friars', batterLevel=3,pitcherLevel=3){
+
 
 	this.navCtrl.push(CreateteamPage);
 	}

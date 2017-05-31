@@ -7,49 +7,20 @@
   </ion-navbar>
 </ion-header>-->
 
-<ion-content padding>
-  <h3>27 Strikeouts</h3>
-  <button ion-button block on-tap="continueGame()" id="continueGame">Continue Game</button>
-  <button ion-button on-tap="createTeam()" id="continueGame">Create Team</button>
-  <button ion-button on-tap="editTeam()" id="continueGame">Edit Team</button>
-  <button ion-button on-tap="viewTeam()" id="continueGame">View Team</button>
-
-
-
-<!--<ion-list>
-      <ion-item no-lines>
-  <ion-range min="0" max="100" [(ngModel)]="OppOffense" color="secondary" id="velocitySlider1">
-        </ion-range>
-        </ion-item>
-
-      <ion-item no-lines>
-  <ion-range min="0" max="100" [(ngModel)]="OppPitcher" color="secondary" id="velocitySlider2">
-        <ion-icon small range-left>Opponent Pitcher:</ion-icon>
-        </ion-range>
-        </ion-item>
-
-      <ion-item no-lines>
- <ion-label color="primary">Opponent Name: </ion-label>
-    <ion-input placeholder="Calgary Crustaceans"></ion-input>
-        </ion-item>
+<ion-content padding class="bgimage">
+  <h3 style="color:white;">27 Strikeouts</h3>
   
-  <ion-item no-lines>
-  <ion-range min="0" max="100" [(ngModel)]="MyOffense" color="secondary" id="velocitySlider4">
-        <ion-icon small range-left>My Offense:</ion-icon>
-        </ion-range>
-        </ion-item>
-  <ion-item no-lines>
-  <ion-range min="0" max="100" [(ngModel)]="MyPitcher" color="secondary" id="velocitySlider6">
-        <ion-icon small range-left>My Pitcher:</ion-icon>
-        </ion-range>
-        </ion-item>
-  <ion-item no-lines>
-<ion-label color="primary">My Team Name: </ion-label>
-    <ion-input placeholder="Pluto Panthers"></ion-input>
-        </ion-item>
-        </ion-list>-->
-  <button ion-button block on-tap="newGame('')" id="createOpponent">New Game</button>
-  <table style="table-layout: fixed;"><tr>
+  
+  <table style="table-layout: fixed; width:100%;"><tr><td style="height:330px;"></td></tr><tr><td style="width:50%; padding-left:5px; padding-right: 5px;">
+  <button ion-button block on-tap="continueGame()" id="continueGame">Continue Game</button></td><td style="width:50%; padding-left:5px; padding-right: 5px;">
+  <button ion-button block on-tap="newGame('')" id="newGame">New Game</button></td></tr>
+  <tr><td style="width:50%; padding-left:5px; padding-right: 5px;">
+  <button ion-button block on-tap="createTeam()" id="createTeam">Create Team</button></td><td style="width:50%; padding-left:5px; padding-right: 5px;">
+  <button ion-button block on-tap="editTeam()" id="editTeam">Edit Team</button></td></tr>
+  </table>
+
+  
+  <table style="table-layout: fixed; width:100%;"><tr>
   <td style="width:50%; padding-left:5px; padding-right: 5px;"><button ion-button block on-tap="bust27()" id="createOpponent">27 or Bust</button></td>
   <td style="width:50%; padding-left:5px; padding-right: 5px;"><button ion-button block on-tap="nothing()" id="createOpponent">Quest for Nothing</button></td></tr><tr>
   <td style="width:50%; padding-left:5px; padding-right: 5px;"><button ion-button block on-tap="save()" id="createOpponent">Save the Day</button></td>

@@ -49,7 +49,17 @@ export class BatterinfoComponent {
      this.batterid = val;
 
      storage.ready().then(() => {
-       storage.get('player'.concat(this.batterid.toString())).then((val) => {
+     	storage.get('awayTeam').then(teamval => {
+     	console.log(teamval);
+     	storage.get(teamval).then(teamobj => {
+     	let i =0;
+     	console.log(this.batterid);
+     	for (i=0;i<teamobj.batters.length;i++){
+     	console.log(teamobj.batters[i].order);
+     	if (teamobj.batters[i].order==this.batterid){
+       val = teamobj.batters[i];
+       }
+       }
        this.battername = val.name;
        this.today = '2-4 (HR,3B,KK,BB,GO,FO)';
        this.avg = val.stats.avg.toFixed(3); this.obp = val.stats.obp.toFixed(3); this.slg = val.stats.slg.toFixed(3); this.k = val.stats.k; this.pa = val.stats.pa; this.bb = val.stats.bb; this.hr = val.stats.hr;
@@ -72,7 +82,7 @@ export class BatterinfoComponent {
 	       else if (val.zones[i][0]/val.zones[i][1]>cutoffs[14]){ aahold[i] = 'blue7'; }
 	       else { aahold[i] = 'blue8'; }
        }
-
+       })
        })
      });
 

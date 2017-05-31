@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Storage } from '@ionic/storage';
+import { Events } from 'ionic-angular';
 
 /**
  * Generated class for the PitcherinfoComponent component.
@@ -55,13 +55,11 @@ export class PitcherinfoComponent {
   q: number = 1013;
   r: number = 1019;
 
-  constructor(public storage: Storage) {
+  constructor(public events: Events) {
     console.log('Hello PitcherinfoComponent Component');
-	storage.ready().then(() => {
-	   storage.get('gametype').then(gtype => {
 
-	   console.log('currentPitcher'+gtype);
-       storage.get('currentPitcher'+gtype).then((val) => {
+       this.events.subscribe('centralPitcher', val => {
+
        let numPitches = val.numPitches;
        if (numPitches<2){ document.getElementById('pitch2').className += 'hiddenPitch'; document.getElementById('pitch2n').className += 'hiddenPitch'; document.getElementById('pitch2v').className += 'hiddenPitch'; document.getElementById('pitch2c').className += 'hiddenPitch';}
        if (numPitches<3){ document.getElementById('pitch3').className += 'hiddenPitch'; document.getElementById('pitch3n').className += 'hiddenPitch'; document.getElementById('pitch3v').className += 'hiddenPitch'; document.getElementById('pitch3c').className += 'hiddenPitch';}
@@ -92,11 +90,11 @@ export class PitcherinfoComponent {
        this.vdist4 = val.pitch4.movement[1];
        this.hdist5 = val.pitch5.movement[0];
        this.vdist5 = val.pitch5.movement[1];
-       this.p1Velocity = (this.pitch1Velocity+this.Velocity).toString()+' MPH';
-       this.p2Velocity = (this.pitch2Velocity+this.Velocity).toString()+' MPH';
-       this.p3Velocity = (this.pitch3Velocity+this.Velocity).toString()+' MPH';
-       this.p4Velocity = (this.pitch4Velocity+this.Velocity).toString()+' MPH';
-       this.p5Velocity = (this.pitch5Velocity+this.Velocity).toString()+' MPH';
+       this.p1Velocity = (this.pitch1Velocity+this.Velocity/10.).toString()+' MPH';
+       this.p2Velocity = (this.pitch2Velocity+this.Velocity/10.).toString()+' MPH';
+       this.p3Velocity = (this.pitch3Velocity+this.Velocity/10.).toString()+' MPH';
+       this.p4Velocity = (this.pitch4Velocity+this.Velocity/10.).toString()+' MPH';
+       this.p5Velocity = (this.pitch5Velocity+this.Velocity/10.).toString()+' MPH';
        this.p1Control = Math.max(Math.floor((this.pitch1Control-this.Velocity*this.Movement/100.)),0).toString()+' Con';
        this.p2Control = Math.max(Math.floor((this.pitch2Control-this.Velocity*this.Movement/100.)),0).toString()+' Con';
        this.p3Control = Math.max(Math.floor((this.pitch3Control-this.Velocity*this.Movement/100.)),0).toString()+' Con';
@@ -121,8 +119,6 @@ export class PitcherinfoComponent {
 	  canvas_arrow(ctx,midpoint-hdist[i-1]*multiplier,midpoint-vdist[i-1]*multiplier,midpoint+hdist[i-1]*multiplier,midpoint+vdist[i-1]*multiplier);
 	  }
 
-       })
-     })
      });
   }
 
