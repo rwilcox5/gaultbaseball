@@ -17,6 +17,8 @@ import { Events } from 'ionic-angular';
 export class StrikezoneComponent {
   @ViewChild('strikezoneCanvas') strikezoneCanvas;
 
+
+
   constructor(public events: Events) {
     
 
@@ -38,14 +40,21 @@ export class StrikezoneComponent {
   })
   }
 
+  afterCanvasTap(event){
+  stopanimate = true;
+  let canvas = this.strikezoneCanvas.nativeElement;
+
+
+    stopZone(event.srcEvent.pageX-Math.floor(canvas.getBoundingClientRect().left)-1,event.srcEvent.pageY-Math.floor(canvas.getBoundingClientRect().top)-1);
+
+  }
+
 
 	ngAfterViewInit(){  
 
         let canvas = this.strikezoneCanvas.nativeElement;
-        canvas.addEventListener("mousedown", function (e) {
-                stopZone(e.clientX-Math.floor(canvas.getBoundingClientRect().left)-1,e.clientY-Math.floor(canvas.getBoundingClientRect().top)-1);
 
-        }, false);
+
         let myelement = document.getElementById('scoreboard');
         let physicalScreenW = myelement.getBoundingClientRect().width;
         this.strikezoneCanvas.nativeElement.width = physicalScreenW*.67-10;

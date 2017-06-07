@@ -49,7 +49,8 @@ export class BatterinfoComponent {
      this.batterid = val;
 
      storage.ready().then(() => {
-     	storage.get('awayTeam').then(teamval => {
+       storage.get('gametype').then((gtval) => {
+     	storage.get('awayTeam'+gtval).then(teamval => {
      	console.log(teamval);
      	storage.get(teamval).then(teamobj => {
      	let i =0;
@@ -86,7 +87,7 @@ export class BatterinfoComponent {
        })
      });
 
-
+     })
     });
   }
 

@@ -24,7 +24,8 @@ export class SituationComponent {
 
   constructor(public events: Events, storage: Storage) {
     storage.ready().then(() => {
-       storage.get('situation').then((val) => {
+    storage.get('gametype').then(gtval => {
+       storage.get('situation'+gtval).then((val) => {
 
        this.balls = val[0];
 	   this.strikes = val[1];
@@ -36,6 +37,7 @@ export class SituationComponent {
 	   for (i=1;i<4;i++){if (val[4][3-i]==1) {drawBase(c,i,'red',c.width);} else {drawBase(c,i,'white',c.width);}}
 
 
+       })
        })
      });
     console.log('Hello SituationComponent Component');

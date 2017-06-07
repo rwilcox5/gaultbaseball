@@ -26,6 +26,10 @@ private oppOffense = 50;
   myOffense: number = 50;
   myPitcher: number = 50;
   teams: Array<object> = [];
+  contactInput: number = 50;
+  powerInput: number = 50;
+
+
 
   constructor(public navCtrl: NavController, storage: Storage) {
 	   this.storage = new Storage(Storage);
@@ -34,9 +38,12 @@ private oppOffense = 50;
 	   this.storage.ready().then(() => {
 	this.storage.get('teamList').then((idval) => {
 	
+	if (idval != null)
+	{
 	let i =0;
 	for (i=0;i<idval.length;i++){
 	this.storage.get(idval[i]).then((teamval) => { this.teams.push(teamval);})
+	}
 	}
 	
 	
@@ -73,6 +80,7 @@ loadSwing(){
 	   }
 	   for (ixi=-5;ixi<15;ixi++){
 	   for (iyi=-5;iyi<15;iyi++){
+
 	   		let swp = swingPercentage([50,50,.92,.92,.06,.06],ixi*10,iyi*10);
 	   		let cp = swingPercentage([50,30,.92,.92,.2,.2],ixi*10,iyi*10);
 	   		let inp = swingPercentage([50,40,.8,.8,.05,.05],ixi*10,iyi*10);
@@ -80,7 +88,18 @@ loadSwing(){
 	   		let dp = swingPercentage([50,50,.25,.25,.1,.014],ixi*10,iyi*10);
 	   		let tp = swingPercentage([50,50,.08,.08,.1,.005],ixi*10,iyi*10);
 	   		let hp = swingPercentage([50,50,.24,.24,.025,.01],ixi*10,iyi*10);
-	   		let slgp = (swp*cp*inp*(sp+dp*2+tp*3+hp*4)).toFixed(2);
+	   		let slgp = (swp*cp*inp*(sp+dp*2+tp*3+hp*4)).toFixed(2).substring(2,);
+
+	   		let batter = createBatter27({'id':1,'cInput':this.contactInput,'pInput':this.powerInput});
+	   		let tbPt = 0;
+	   		let i = 0;
+	   		for (i=0;i<10000;i++){
+	   			let resultAB = makeSwing(ixi*10,iyi*10,batter.swingMap,[0,0]);
+	   			if (resultAB == 'swing'){tbPt++;}
+
+	   		}
+	   		slgp = (tbPt/10000).toFixed(2).substring(1,); 
+
 	   		ctx.fillStyle='#FFFFFF';
 	   		ctx.font = "10px Arial";
             ctx.fillText(slgp.toString(),ixi*20+100,iyi*20+100);
@@ -104,6 +123,17 @@ loadSwing(){
   	this.navCtrl.push(GamePage);}
 
   bust27(){
+  	this.storage.ready().then(() => {
+		this.storage.get('first27').then(val => {if (val != null){console.log('do nothing');} else {console.log('create');
+
+			this.storage.set('team27bust1', createTeam27());
+			 this.storage.set('first27',true);
+		 console.log('create the team');
+		}
+		})
+		})
+  	
+  	this.newGame('27',[[0],[],[0,0,0],[0,0,0]],[0,0,0,0,[0,0,0]],15,'team27bust1');
 	this.storage.ready().then(() => {
 		this.storage.set('gametype','27');
 		})
@@ -111,6 +141,7 @@ loadSwing(){
   	this.navCtrl.push(Bust27Page);}
 
   nothing(){
+  this.newGame('nothing');
   	this.storage.ready().then(() => {
 		this.storage.set('gametype','nothing');
 		})
@@ -135,7 +166,10 @@ loadSwing(){
 
 	this.navCtrl.push(CreateteamPage);
 	}
+  editTeam(){
 
+	this.navCtrl.push(EditteamPage);
+	}
   viewTeam(){
 	this.storage.ready().then(() => {
 	this.storage.get('teamList').then((val) => {
@@ -145,38 +179,46 @@ loadSwing(){
 		})
 	}
 
-  newGame(gtype,linescoreInit=[[0],[],[0,0,0],[0,0,0]],situationInit=[0,0,0,1,[0,0,0]],pitcherInit=createPitcher('Jack')){
+  newGame(gtype,linescoreInit=[[0],[],[0,0,0],[0,0,0]],situationInit=[0,0,0,0,[0,0,0]],pitcherInit=15,awayTeamInit='team0',homeTeamInit='team0'){
   if (gtype==''){
      this.navCtrl.push(CreategamePage);
      }
     else{
-  	console.log(pitcherInit.pitch1.name);
+
   	this.storage.ready().then(() => {
 		this.storage.set('gametype',gtype);
-		})
-   
-	this.storage.ready().then(() => {
-		this.storage.set('nicknames', ['Apollo','Buttermilk','Catfish','Destroyer','Elephant','Foxy','Gunner','Harpoon','Ikabod']);
-
-	   this.storage.get('nicknames').then((val) => {
-	   let i = 0;
-	   let tlineup = [];
-	   for (i=0;i<9;i++){
-	   this.allnicknames = val[i];
-	   let cPlayer = createPlayer(this.allnicknames);
-	   this.storage.set('player'+(i+1).toString(), cPlayer); tlineup.push({'name':cPlayer.name,'bats':cPlayer.bats,'avg':cPlayer.stats.avg,'obp':cPlayer.stats.obp,'slg':cPlayer.stats.slg,'pa':cPlayer.stats.pa,'hr':cPlayer.stats.hr,'k':cPlayer.stats.k,'bb':cPlayer.stats.bb}); tlineup.push({'name':cPlayer.name,'bats':cPlayer.bats,'avg':cPlayer.statsR.avg,'obp':cPlayer.statsR.obp,'slg':cPlayer.statsR.slg,'pa':cPlayer.statsR.pa,'hr':cPlayer.statsR.hr,'k':cPlayer.statsR.k,'bb':cPlayer.statsR.bb}); tlineup.push({'name':cPlayer.name,'bats':cPlayer.bats,'avg':cPlayer.statsL.avg,'obp':cPlayer.statsL.obp,'slg':cPlayer.statsL.slg,'pa':cPlayer.statsL.pa,'hr':cPlayer.statsL.hr,'k':cPlayer.statsL.k,'bb':cPlayer.statsL.bb});
-	   }
-
-	   this.storage.set('lineup', tlineup);
-	   });
-
 
   	   this.storage.set('currentSequence'+gtype, []);
   	   
   	   this.storage.set('situation'+gtype, situationInit);
   	   this.storage.set('linescore'+gtype,linescoreInit);
   	   this.storage.set('currentPitcher'+gtype,pitcherInit);
+  	   this.storage.set('awayTeam'+gtype,awayTeamInit);
+  	   this.storage.set('homeTeam'+gtype,homeTeamInit);
+
+  	   this.storage.get(awayTeamInit).then(val => {
+  	   	   let batters = val.batters
+	  	   let oppLineup = [];
+	  	   let i = 0;
+	  	   for (i=1;i<28;i++){
+	  	   let ii =0;
+	  	   for (ii=0;ii<27;ii++){
+	  	   if (batters[ii]['order']==i){
+	  	   let cPlayer = batters[ii];
+	  	   oppLineup.push({'name':cPlayer.name,'bats':cPlayer.bats,'avg':cPlayer.stats.avg,'obp':cPlayer.stats.obp,'slg':cPlayer.stats.slg,'pa':cPlayer.stats.pa,'hr':cPlayer.stats.hr,'k':cPlayer.stats.k,'bb':cPlayer.stats.bb});
+	  	   oppLineup.push({'name':cPlayer.name,'bats':cPlayer.bats,'avg':cPlayer.statsR.avg,'obp':cPlayer.statsR.obp,'slg':cPlayer.statsR.slg,'pa':cPlayer.statsR.pa,'hr':cPlayer.statsR.hr,'k':cPlayer.statsR.k,'bb':cPlayer.statsR.bb}); 
+	  	   oppLineup.push({'name':cPlayer.name,'bats':cPlayer.bats,'avg':cPlayer.statsL.avg,'obp':cPlayer.statsL.obp,'slg':cPlayer.statsL.slg,'pa':cPlayer.statsL.pa,'hr':cPlayer.statsL.hr,'k':cPlayer.statsL.k,'bb':cPlayer.statsL.bb});
+	  	   }
+	  	   }
+	  	   }
+	  	   this.storage.set('lineup'+gtype,oppLineup);
+	  	})
+
+
      });
+
+    
+
      }
      
   }
@@ -184,24 +226,125 @@ loadSwing(){
 }
 
 
-function createPitcher(pname){
-	let pitch1 = {'name':'Fastball','velocity':88,'movement':[20,5],'control':80}; let pitch2 = {'name':'Fastball','velocity':88,'movement':[20,5],'control':80}; let pitch3 = {'name':'Fastball','velocity':88,'movement':[20,5],'control':80}; let pitch4 = {'name':'Fastball','velocity':88,'movement':[20,5],'control':80}; let pitch5 = {'name':'Fastball','velocity':88,'movement':[20,5],'control':80};
 
-	pitch1 = {'name':'Fastball','velocity':88,'movement':[20,5],'control':80};
-	pitch2 = {'name':'Changeup','velocity':75,'movement':[30,30],'control':80};
-	pitch3 = {'name':'Slider','velocity':80,'movement':[-40,20],'control':75};
-	/** pitch4 = {'name':'Curve','velocity':72,'movement':[-20,50],'control':70};
-	pitch5 = {'name':'Splitter','velocity':80,'movement':[5,30],'control':65}; **/
-
-	return {'name':pname,'numPitches':3,'pitch1':pitch1,'pitch2':pitch2,'pitch3':pitch3,'pitch4':pitch4,'pitch5':pitch5};
+function swingPercentage([maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey],xL,yL){
+   let spx = (minValuex-maxValuex)/(100)**2*(xL-maxLocationx)**2+maxValuex;
+   let spy = (minValuey-maxValuey)/(100)**2*(yL-maxLocationy)**2+maxValuey;
+   let swingPercentage = Math.max(spx*spy,0);
+   return swingPercentage;
 }
 
-function createPlayer(pname){
+function toHex(n){
+	let digit1 = Math.floor(n/16.);
+	let digit2 = n%16;
+	return dth(digit1)+dth(digit2);
+
+}
+
+function dth(n){
+	if (n<10){
+		return n.toString();
+	}
+	else if (n==10) {return 'A';}
+	else if (n==11) {return 'B';}
+	else if (n==12) {return 'C';}
+	else if (n==13) {return 'D';}
+	else if (n==14) {return 'E';}
+	else if (n==15) {return 'F';}
+}
+
+function createTeam27(){
+	console.log('cccc');
+	let batters = [createBatter27({'id':1}),
+	createBatter27({'id':2}),
+	createBatter27({'id':3}),
+	createBatter27({'id':4}),
+	createBatter27({'id':5}),
+	createBatter27({'id':6}),
+	createBatter27({'id':7}),
+	createBatter27({'id':8}),
+	createBatter27({'id':9}),
+	createBatter27({'id':10}),
+	createBatter27({'id':11}),
+	createBatter27({'id':12}),
+	createBatter27({'id':13}),
+	createBatter27({'id':14}),
+	createBatter27({'id':15}),
+	createBatter27({'id':16}),
+	createBatter27({'id':17}),
+	createBatter27({'id':18}),
+	createBatter27({'id':19}),
+	createBatter27({'id':20}),
+	createBatter27({'id':21}),
+	createBatter27({'id':22}),
+	createBatter27({'id':23}),
+	createBatter27({'id':24}),
+	createBatter27({'id':25}),
+	createBatter27({'id':26}),
+	createBatter27({'id':27})];
+
+
+	let name = '';	
+	console.log('ddd');
+	return {'teamId':'team27bust1','name':name,'batters':batters};
+
+	
+}
+
+function createBatter27(batter){
+
+		let id = batter.id;
+		let contact = 50; let power = 50; let speed = 50; let defense = 50; let batsR = .75;
+		if (id==1){	batter['position'] = 'C';         batsR = .95; contact = 10; power = 10; speed = 20; defense = 60; batter['order'] = 1; batter['name'] = createName();	}
+		else if (id==2){	batter['position'] = '2B'; batsR = .35; contact = 10; power = 10; speed = 40; defense = 50; batter['order'] = 2; batter['name'] = createName();	}
+		else if (id==3){	batter['position'] = 'SS'; batsR = .9; contact = 15; power = 15; speed = 70; defense = 60; batter['order'] = 3; batter['name'] = createName();	}
+		else if (id==4){	batter['position'] = '3B'; batsR = .9; contact = 15; power = 15; speed = 75; defense = 60; batter['order'] = 4; batter['name'] = createName();	}
+		else if (id==5){	batter['position'] = 'LF'; batsR = .9; contact = 20; power = 20; speed = 60; defense = 50; batter['order'] = 5; batter['name'] = createName();	}
+		else if (id==6){	batter['position'] = 'RF'; batsR = .5; contact = 20; power = 20; speed = 60; defense = 70; batter['order'] = 6; batter['name'] = createName();    }
+		else if (id==7){	batter['position'] = 'CF'; batsR = .5; contact = 25; power = 25; speed = 80; defense = 60; batter['order'] = 7; batter['name'] = createName();	}
+		else if (id==8){	batter['position'] = '1B'; batsR = .5; contact = 25; power = 25; speed = 60; defense = 50; batter['order'] = 8; batter['name'] = createName();	}
+		else if (id==9){	batter['position'] = 'DH'; batsR = .5; contact = 30; power = 30; speed = 40; defense = 50; batter['order'] = 9; batter['name'] = createName();	}
+		else if (id==10){	batter['position'] = 'C'; batsR = .9; contact = 30; power = 30; speed = 70; defense = 70; batter['order'] = 10; batter['name'] = createName();	}
+		else if (id==11){	batter['position'] = '2B'; batsR = .5; contact = 35; power = 35; speed = 70; defense = 80; batter['order'] = 11; batter['name'] = createName();	}
+		else if (id==12){	batter['position'] = 'SS'; batsR = .85; contact = 35; power = 35; speed = 50; defense = 50; batter['order'] = 12; batter['name'] = createName();	}
+		else if (id==13){	batter['position'] = '3B'; batsR = .95; contact = 40; power = 40; speed = 30; defense = 70; batter['order'] = 13; batter['name'] = createName();	}
+		else if (id==14){	batter['position'] = 'LF'; batsR = .5; contact = 40; power = 40; speed = 80; defense = 50; batter['order'] = 14; batter['name'] = createName();	}
+		else if (id==15){	batter['position'] = 'RF'; batsR = .9; contact = 45; power = 45; speed = 60; defense = 50; batter['order'] = 15; batter['name'] = createName();	}
+		else if (id==16){	batter['position'] = 'CF'; batsR = .5; contact = 45; power = 45; speed = 60; defense = 70; batter['order'] = 16; batter['name'] = createName();    }
+		else if (id==17){	batter['position'] = '1B'; batsR = .5; contact = 50; power = 50; speed = 80; defense = 60; batter['order'] = 17; batter['name'] = createName();	}
+		else if (id==18){	batter['position'] = 'DH'; batsR = .5; contact = 50; power = 50; speed = 60; defense = 50; batter['order'] = 18; batter['name'] = createName();	}
+		else if (id==19){	batter['position'] = 'C'; batsR = .5; contact = 55; power = 55; speed = 40; defense = 50; batter['order'] = 19; batter['name'] = createName();	}
+		else if (id==20){	batter['position'] = '2B'; batsR = .9; contact = 55; power = 55; speed = 70; defense = 70; batter['order'] = 20; batter['name'] = createName();	}
+		else if (id==21){	batter['position'] = 'SS'; batsR = .5; contact = 60; power = 60; speed = 70; defense = 80; batter['order'] = 21; batter['name'] = createName();	}
+		else if (id==22){	batter['position'] = '3B'; batsR = .85; contact = 65; power = 65; speed = 50; defense = 50; batter['order'] = 22; batter['name'] = createName();	}
+		else if (id==23){	batter['position'] = 'LF'; batsR = .95; contact = 70; power = 70; speed = 30; defense = 70; batter['order'] = 23; batter['name'] = createName();	}
+		else if (id==24){	batter['position'] = 'RF'; batsR = .5; contact = 75; power = 75; speed = 80; defense = 50; batter['order'] = 24; batter['name'] = createName();	}
+		else if (id==25){	batter['position'] = 'CF'; batsR = .9; contact = 80; power = 80; speed = 60; defense = 50; batter['order'] = 25; batter['name'] = createName();	}
+		else if (id==26){	batter['position'] = '1B'; batsR = .5; contact = 85; power = 85; speed = 60; defense = 70; batter['order'] = 26; batter['name'] = createName();    }
+		else if (id==27){	batter['position'] = 'DH'; batsR = .5; contact = 90; power = 90; speed = 80; defense = 60; batter['order'] = 27; batter['name'] = createName();	}
+
+		if (Math.random()<batsR){batter['bats']='R';}
+		else{		batter['bats']='L';		}
+		if (contact<50){batter['contact'] = Math.floor(contact*Math.random()+contact/2.);}
+		else{batter['contact'] = 100-Math.floor((100-contact)*Math.random()+(100-contact)/2.);}
+		if (power<50){batter['power'] = Math.floor(power*Math.random()+power/2.);}
+		else{batter['power'] = 100-Math.floor((100-power)*Math.random()+(100-power)/2.);}
+		if (speed<50){batter['speed'] = Math.floor(speed*Math.random()+speed/2.);}
+		else{batter['speed'] = 100-Math.floor((100-speed)*Math.random()+(100-speed)/2.);}
+		if (defense<50){batter['defense'] = Math.floor(defense*Math.random()+defense/2.);}
+		else{batter['defense'] = 100-Math.floor((100-defense)*Math.random()+(100-defense)/2.);}
+
+	let pname = batter.name;
+	let position = batter.position;
+	let bats = batter.bats;
+	let order = batter.order;
 	let zoneshold = [];
     let i = 0;
     for (i=0;i<25;i++){
     	zoneshold.push([10+Math.random()*60,100]);
-    }
+    	}
+
+
     let statshold = {'pa':0,'n1b':0,'n2b':0,'n3b':0,'hr':0,'bb':0,'hbp':0,'k':0,'ab':0,'avg':0,'obp':0,'slg':0,};
     statshold['pa'] = Math.floor(Math.random()*700);
     statshold['n1b'] = Math.floor(Math.random()*statshold.pa*.1+statshold.pa*.2);
@@ -244,39 +387,292 @@ function createPlayer(pname){
     statsLhold['obp'] = (statsLhold.n1b+statsLhold.n2b+statsLhold.n3b+statsLhold.hr+statsLhold.bb+statsLhold.hbp)/statsLhold.pa;
     statsLhold['slg'] = (statsLhold.n1b+2*statsLhold.n2b+3*statsLhold.n3b+4*statsLhold.hr)/statsLhold.ab;
 
-    let maxLocationx = 50;
-    let maxLocationy = 50;
-    let maxValuex = .9;
-    let maxValuey = .9;
-    let minValuex = .05;
-    let minValuey = .05;
-    let swingMap = [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
-    return {'name':pname,'stats':statshold,'statsL':statsLhold,'statsR':statsRhold,'bats':'R','zones':zoneshold, 'swingMap':swingMap};
+
+    contact = batter.cInput;
+    power = batter.pInput;
+    let swingMap = createSwing(contact,power);
+    let contactMap = createContact(contact,power);
+    let inplayMap = createInplay(contact,power);
+    let singleMap = createSingle(contact,power);
+    let doubleMap = createDouble(contact,power);
+    let tripleMap = createTriple(contact,power);
+    let hrMap = createHr(contact,power);
+
+    return {'id':id,'order':order,'position':position,'name':pname,'stats':statshold,'statsL':statsLhold,'statsR':statsRhold,'bats':bats,'zones':zoneshold, 'swingMap':swingMap, 'contactMap':contactMap, 'inplayMap':inplayMap, 'singleMap':singleMap, 'doubleMap':doubleMap, 'tripleMap':tripleMap, 'hrMap':hrMap,'contact':batter.contact,'power':batter.power,'speed':batter.speed,'defense':batter.defense};
+    
 }
 
-function swingPercentage([maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey],xL,yL){
-   let spx = (minValuex-maxValuex)/(100)**2*(xL-maxLocationx)**2+maxValuex;
-   let spy = (minValuey-maxValuey)/(100)**2*(yL-maxLocationy)**2+maxValuey;
-   let swingPercentage = Math.max(spx*spy,0);
-   return swingPercentage;
-}
+function createPitcher(pitcher,init=false){
+	let pitchertemp = pitcher;
+	let velocity = 50;
+	let control = 50;
+	let movement = 50;
+	let stamina = 50;
+	if (init){
+	let position = 'SP';
+	if (pitcher.id<20){position = 'SP';}
+	else if (pitcher.id==20){position='CL';}
+	else {position = 'RP';}
+	if (pitcher.id==15){velocity = 94; control = 90; movement = 90; stamina = 90;}
+	if (pitcher.id==16){velocity = 91; control = 85; movement = 85; stamina = 85;}
+	if (pitcher.id==17){velocity = 89; control = 80; movement = 80; stamina = 80;}
+	if (pitcher.id==18){velocity = 88; control = 80; movement = 75; stamina = 80;}
+	if (pitcher.id==19){velocity = 87; control = 70; movement = 70; stamina = 75;}
+	if (pitcher.id==20){velocity = 97; control = 85; movement = 95; stamina = 35;}
+	if (pitcher.id==21){velocity = 94; control = 80; movement = 80; stamina = 45;}
+	if (pitcher.id==22){velocity = 90; control = 60; movement = 80; stamina = 45;}
+	if (pitcher.id==23){velocity = 88; control = 70; movement = 80; stamina = 65;}
+	if (pitcher.id==24){velocity = 92; control = 70; movement = 80; stamina = 45;}
+	if (pitcher.id==25){velocity = 88; control = 90; movement = 80; stamina = 35;}
 
-function toHex(n){
-	let digit1 = Math.floor(n/16.);
-	let digit2 = n%16;
-	return dth(digit1)+dth(digit2);
 
-}
+	velocity = Math.floor(velocity-2+Math.random()*5);
+	control = Math.floor(control-5+Math.random()*10);
+	movement = Math.floor(movement-5+Math.random()*10);
+	stamina = Math.floor(stamina-5+Math.random()*10);
+	let throws = 'R';
+	let thrown = 1;
+	if (throws == 'R'){thrown = 1;}
+	else {thrown = -1;}
 
-function dth(n){
-	if (n<10){
-		return n.toString();
+	let pitch1 = {'name':'','id':1,'velocity':50,'movement':[50,50],'control':50};
+	let pitch2 = {'name':'','id':2,'velocity':50,'movement':[50,50],'control':50};
+	let pitch3 = {'name':'','id':3,'velocity':50,'movement':[50,50],'control':50};
+	let pitch4 = {'name':'','id':4,'velocity':50,'movement':[50,50],'control':50};
+	let pitch5 = {'name':'','id':5,'velocity':50,'movement':[50,50],'control':50};
+
+
+	pitch1 = {'name':'Fastball','id':1,'velocity':velocity,'movement':[Math.floor(movement/100*thrown*10),Math.floor(movement/100*thrown*5)],'control':control};
+	pitch2 = {'name':'Changeup','id':2,'velocity':velocity-10,'movement':[Math.floor(movement/100*thrown*30),Math.floor(movement/100*thrown*20)],'control':control-15};
+	pitch3 = {'name':'Curve','id':3,'velocity':velocity-13,'movement':[Math.floor(movement/100*thrown*-20),Math.floor(movement/100*thrown*50)],'control':control-20};
+	if (pitcher.id < 20){
+	pitch4 = {'name':'Cutter','id':4,'velocity':velocity-4,'movement':[Math.floor(movement/100*thrown*-20),Math.floor(movement/100*thrown*10)],'control':control-10};
 	}
-	else if (n==10) {return 'A';}
-	else if (n==11) {return 'B';}
-	else if (n==12) {return 'C';}
-	else if (n==13) {return 'D';}
-	else if (n==14) {return 'E';}
-	else if (n==15) {return 'F';}
+	if (pitcher.id < 18){
+	pitch5 = {'name':'Slider','id':5,'velocity':velocity-7,'movement':[Math.floor(movement/100*thrown*-30),Math.floor(movement/100*thrown*30)],'control':control-15};
+	}
+
+
+	pitchertemp = {'id':pitcher.id,'name':createName(),'position':position,'throws':throws,'velocity':velocity,'control':control,'movement':movement,'stamina':stamina,'pitch':[pitch1,pitch2,pitch3,pitch4,pitch5],'velocityold':velocity,'controlold':control,'movementold':movement};
+	pitcher = pitchertemp;
+
+
+	}
+	let pname = pitcher.name;
+	let id = pitcher.id;
+	let throws = pitcher.throws;
+	let position = pitcher.position;
+	let pitch1 = pitcher.pitch[0];
+	let pitch2 = pitcher.pitch[1];
+	let pitch3 = pitcher.pitch[2];
+	let pitch4 = pitcher.pitch[3];
+	let pitch5 = pitcher.pitch[4];
+
+
+	pitch1 = {'name':pitcher.pitch[0].name,'id':pitcher.pitch[0].id,'velocity':pitcher.pitch[0].velocity,'movement':[pitcher.pitch[0].movement[0],pitcher.pitch[0].movement[1]],'control':pitcher.pitch[0].control};
+	pitch2 = {'name':pitcher.pitch[1].name,'id':pitcher.pitch[1].id,'velocity':pitcher.pitch[1].velocity,'movement':[pitcher.pitch[1].movement[0],pitcher.pitch[1].movement[1]],'control':pitcher.pitch[1].control};
+	pitch3 = {'name':pitcher.pitch[2].name,'id':pitcher.pitch[2].id,'velocity':pitcher.pitch[2].velocity,'movement':[pitcher.pitch[2].movement[0],pitcher.pitch[2].movement[1]],'control':pitcher.pitch[2].control};
+	pitch4 = {'name':pitcher.pitch[3].name,'id':pitcher.pitch[3].id,'velocity':pitcher.pitch[3].velocity,'movement':[pitcher.pitch[3].movement[0],pitcher.pitch[3].movement[1]],'control':pitcher.pitch[3].control};
+	pitch5 = {'name':pitcher.pitch[4].name,'id':pitcher.pitch[4].id,'velocity':pitcher.pitch[4].velocity,'movement':[pitcher.pitch[4].movement[0],pitcher.pitch[4].movement[1]],'control':pitcher.pitch[4].control};
+	let i = 0;
+	let numPitches =0;
+	for (i=0;i<5;i++){
+	if (pitcher.pitch[i].name != ''){
+		numPitches++;
+	}
+	}
+
+	
+
+	return {'id':id,'name':pname,'numPitches':numPitches,'throws':throws,'position':position,'velocity':velocity,'control':control,'movement':movement,'stamina':stamina,'pitch1':pitch1,'pitch2':pitch2,'pitch3':pitch3,'pitch4':pitch4,'pitch5':pitch5,'pitch':[pitch1,pitch2,pitch3,pitch4,pitch5],'velocityold':velocity,'controlold':control,'movementold':movement};
 }
+
+function createName(){
+	let firstNames = [ ['James','3.318'],['John','3.271'],['Robert','3.143'],['Michael','2.629'],['William','2.451'],['David','2.363'],['Richard','1.703'],['Charles','1.523'],['Joseph','1.404'],['Thomas','1.38']];
+	let i = 0; let sumWeights = 0;
+	for (i=0;i<firstNames.length;i++){
+		sumWeights = sumWeights+parseFloat(firstNames[i][1]);
+	}
+	let sumRunning = 0;
+	let xRandom = Math.random();
+	let firstName = firstNames[firstNames.length-1][0];
+	for (i=0;i<firstNames.length;i++){
+		if(xRandom > sumRunning/sumWeights){firstName = firstNames[i][0];}
+		sumRunning += parseFloat(firstNames[i][1]);
+	}
+	return firstName+' Johnson';
+}
+
+function createSwing(contact, power){
+	let maxLocationx = 50;
+    let maxLocationy = 30;
+    let maxValuex = .76+contact/400.;
+    let maxValuey = .81+contact/400.;
+    let minValuex = .12+power/400.;
+    let minValuey = .06+power/400.;
+    return [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
+}
+
+function createContact(contact, power){
+	let maxLocationx = 50;
+    let maxLocationy = 40;
+    let maxValuex = .91+2*contact/10000+3*power/10000;
+    let maxValuey = .91+2*contact/10000+3*power/10000;
+    let minValuex = .2+4*contact/10000+1*power/10000;
+    let minValuey = .2+4*contact/10000+1*power/10000;
+    return [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
+}
+
+function createInplay(contact, power){
+	let maxLocationx = 50;
+    let maxLocationy = 40;
+    let maxValuex = .8+2*contact/10000+3*power/10000;
+    let maxValuey = .8+2*contact/10000+3*power/10000;
+    let minValuex = .05+4*contact/10000+1*power/10000;
+    let minValuey = .05+4*contact/10000+1*power/10000;
+    return [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
+}
+
+function createSingle(contact, power){
+	let maxLocationx = 50;
+    let maxLocationy = 60;
+    let maxValuex = .4+9*contact/10000+3*power/10000;
+    let maxValuey = .4+9*contact/10000+3*power/10000;
+    let minValuex = .1+5*contact/10000+2*power/10000;
+    let minValuey = .025+5*contact/10000+2*power/10000;
+    return [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
+}
+
+function createDouble(contact, power){
+	let maxLocationx = 50;
+    let maxLocationy = 50;
+    let maxValuex = .21+3*contact/10000+7*power/10000;
+    let maxValuey = .21+3*contact/10000+7*power/10000;
+    let minValuex = .1+3*contact/10000+6*power/10000;
+    let minValuey = .014+3*contact/10000+6*power/10000;
+    return [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
+}
+
+function createTriple(contact, power){
+	let maxLocationx = 50;
+    let maxLocationy = 50;
+    let maxValuex = .06+2*contact/10000+5*power/10000;
+    let maxValuey = .06+2*contact/10000+5*power/10000;
+    let minValuex = .1+1*contact/10000+3*power/10000;
+    let minValuey = .005+.25*contact/10000+1*power/10000;
+    return [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
+}
+
+function createHr(contact, power){
+	let maxLocationx = 50;
+    let maxLocationy = 40;
+    let maxValuex = .2+3*contact/10000+8*power/10000;
+    let maxValuey = .2+3*contact/10000+8*power/10000;
+    let minValuex = .025+2*contact/10000+5*power/10000;
+    let minValuey = .01+.5*contact/10000+1.5*power/10000;
+    return [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
+}
+
+function fullAB(tx,ty,batter){
+	let balls = 0;
+	let strikes = 0;
+	let moreAB = true;
+	let result = [];
+	while (moreAB){
+	result = pitch(tx,ty,balls,strikes,batter);
+	moreAB = result[2];
+	if (moreAB){
+	balls = result[0];
+	strikes = result[1];
+	}
+	}
+	return result[3];
+}
+
+function pitch(tx,ty,balls,strikes,batter){
+	let result = determinePlay(tx,ty,balls,strikes,batter);
+	if (result == 'Ball'){if (balls==3){return [0,0,false,'Walk'];} else {return [balls++,strikes,true,''];}}
+	else if (result == 'Swinging Strike'){if (strikes==2){return [0,0,false,'Strikeout'];} else {return [balls,strikes++,true,''];}}
+	else if (result == 'Strike'){if (strikes==2){return [0,0,false,'Strikeout'];} else {return [balls,strikes++,true,''];}}
+	else if (result == 'Foul'){if (strikes==2){return [0,0,true,''];} else {return [balls,strikes++,true,''];}}
+	else {return [0,0,false,result];}
+	
+}
+
+
+function determinePlay(touchx,touchy,balls, strikes,batter){
+
+	let isStrike = makeCall(touchx,touchy);
+    let isSwing = makeSwing(touchx,touchy,batter.swingMap,[balls,strikes]);
+    if (isSwing=='swing'){
+        let isContact = makeContact(touchx,touchy,batter.contactMap,batter.inplayMap);
+        if (isContact=='fair'){
+            let isPlay = makePlay(touchx,touchy,batter.singleMap,batter.doubleMap,batter.tripleMap,batter.hrMap);
+            return isPlay;
+        }
+        else if (isContact=='foul'){return 'Foul';}
+        else {return 'Swinging Strike';}
+    }
+    else{
+    	return isStrike;
+    	
+    }
+
+    
+}
+
+function makeCall(tx,ty){
+    let thecall = 'ball';
+
+   	let strikeProb = Math.min(Math.max((8.+tx)/16.,0),1)*Math.min(Math.max((8.+ty)/16.,0),1)*Math.min(Math.max((8.+100-tx)/16.,0),1)*Math.min(Math.max((8.+100-ty)/16.,0),1);
+   	if (Math.random()<strikeProb){thecall='strike';}
+    return thecall;
+}
+
+function makeSwing(tx,ty,swingMap,count){
+    let theSwing = 'take';
+    swingMap.maxValueX=swingMap.maxValueX;
+    let percentSwing = swingPercentage(swingMap,tx,ty);
+    if (Math.random()<percentSwing){
+    theSwing = 'swing';
+    }
+
+    return theSwing;
+ }
+
+ function makeContact(tx,ty,contactMap,inplayMap){
+    let theContact = 'miss';
+    let percentContact = swingPercentage(contactMap,tx,ty);
+    if (Math.random()<percentContact){
+    	let percentFair = swingPercentage(inplayMap,tx,ty);
+    	if (Math.random()<percentFair){
+    		theContact = 'fair';
+    	}
+    	else{
+    		theContact = 'foul';
+    	}
+    
+    }
+
+    return theContact;
+ }
+
+  function makePlay(tx,ty,singleMap,doubleMap,tripleMap,hrMap){
+    let thePlay = 'out';
+
+	let xr = Math.random();
+    if (xr<swingPercentage(singleMap,tx,ty)){
+    thePlay = 'Single';
+    }
+    else if (xr<swingPercentage(singleMap,tx,ty)+swingPercentage(doubleMap,tx,ty)){
+    thePlay = 'Double';
+    }
+    else if (xr<swingPercentage(singleMap,tx,ty)+swingPercentage(doubleMap,tx,ty)+swingPercentage(tripleMap,tx,ty)){
+    thePlay = 'Triple';
+    }
+    else if (xr<swingPercentage(singleMap,tx,ty)+swingPercentage(doubleMap,tx,ty)+swingPercentage(tripleMap,tx,ty)+swingPercentage(hrMap,tx,ty)){
+    thePlay = 'Home run';
+    }
+    return thePlay;
+ }
 

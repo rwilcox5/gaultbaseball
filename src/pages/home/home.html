@@ -27,9 +27,11 @@
   <td style="width:50%; padding-left:5px; padding-right: 5px;"><button ion-button block on-tap="nobreaks()" id="createOpponent">No Breaks</button></td></tr><tr>
   <td style="width:50%; padding-left:5px; padding-right: 5px;"><button ion-button block on-tap="practice()" id="createOpponent">Practice</button></td>
   <td style="width:50%; padding-left:5px; padding-right: 5px;"><button ion-button block on-tap="tutorial()" id="createOpponent">Tutorial</button></td></tr></table>
-  
-  <!--<canvas width="400" height="400" style="border:1px solid #d3d3d3; cursor:none;" #swingCanvas></canvas>
-  <button ion-button on-tap="loadSwing()" id="continueGame">Swing Map</button>-->
+
+  <ion-item no-lines tappable class="rangeItem ctdark"><ion-range [(ngModel)]="contactInput" name="contact" color="danger" pin="true"><ion-icon small range-left>Con:</ion-icon></ion-range></ion-item>
+  <ion-item no-lines tappable class="rangeItem ctdark"><ion-range [(ngModel)]="powerInput" name="power" color="danger" pin="true"><ion-icon small range-left>Pow:</ion-icon></ion-range></ion-item>
+  <canvas width="400" height="400" style="border:1px solid #d3d3d3; cursor:none;" #swingCanvas></canvas>
+  <button ion-button on-tap="loadSwing()" id="continueGame">Swing Map</button>
 
   <!--<button ion-button secondary menuToggle>Toggle Menu</button>-->
 </ion-content>
