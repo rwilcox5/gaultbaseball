@@ -1,0 +1,228 @@
+<!--
+  Generated template for the EditteamPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+
+
+
+<ion-content padding>
+
+<ion-item>
+  <ion-label>Choose Your Team</ion-label>
+  <ion-select [(ngModel)]="myteam" (ionChange)="chooseTeam()">
+    <ion-option *ngFor="let team of teams" value="{{team.teamId}}">{{team.name}}</ion-option>
+  </ion-select>
+</ion-item>
+
+<form (ngSubmit)="teamForm()" *ngIf="teamSelected()">
+	<table style="width:100%;">
+		<tr>
+			<td colspan="6">
+		      <ion-item no-lines>
+		        <ion-label>Team Name:</ion-label>
+		        <ion-input type="text" [(ngModel)]="name" name="teamname"></ion-input>
+		      </ion-item>
+		    </td>
+		</tr>
+		<tr>
+			<td colspan="6">
+			<ion-item no-lines>
+		      Create Position Players
+		      </ion-item>
+		    </td>
+		</tr>
+		<tr *ngFor="let i of batterids"><td colspan="6">
+
+		<table style="width:100%;" >
+      	<tr>
+			<td colspan="6">
+		      <ion-item no-lines class="ctdark">
+		        <ion-label>Batter Name:</ion-label>
+		        <ion-input type="text" [(ngModel)]="batters[i].name" name="name{{ batters[i].id }}"></ion-input>
+		      </ion-item>
+		    </td>
+		</tr>
+
+		<tr  class="ctdark">
+			<td style="width:10%;"><ion-label>Pos.</ion-label></td>
+			<td style="width:10%;"><ion-label>Bats</ion-label></td>
+			<td style="width:20%;"><ion-label>Contact</ion-label></td>
+			<td style="width:20%;"><ion-label>Power</ion-label></td>
+			<td style="width:20%;"><ion-label>Speed</ion-label></td>
+			<td style="width:20%;"><ion-label>Defense</ion-label></td>
+		</tr>
+		<tr class="ctdark">
+			<td  class="ctdark">
+			<ion-item no-lines class="ctdark">
+			  <ion-select [(ngModel)]="batters[i].position" name="position{{ batters[i].id }}">
+			    <ion-option value="C">C</ion-option>
+			    <ion-option value="1B">1B</ion-option>
+			    <ion-option value="2B">2B</ion-option>
+			    <ion-option value="SS">SS</ion-option>
+			    <ion-option value="3B">3B</ion-option>
+			    <ion-option value="LF">LF</ion-option>
+			    <ion-option value="CF">CF</ion-option>
+			    <ion-option value="RF">RF</ion-option>
+
+			  </ion-select>
+			  </ion-item>
+			</td>
+			<td  class="ctdark">
+			<ion-item no-lines class="ctdark">
+			  <ion-select [(ngModel)]="batters[i].bats" name="bats{{ batters[i].id }}">
+			    <ion-option value="R">R</ion-option>
+			    <ion-option value="L">L</ion-option>
+			    <ion-option value="S">S</ion-option>
+			  </ion-select>
+			  </ion-item>
+			</td>
+			<td  class="ctdark"><ion-range [(ngModel)]="batters[i].contact" name="contact{{ batters[i].id }}" color="danger" pin="true"></ion-range></td>
+			<td><ion-range [(ngModel)]="batters[i].power" name="power{{ batters[i].id }}" color="danger" pin="true"></ion-range></td>
+			<td><ion-range [(ngModel)]="batters[i].speed" name="speed{{ batters[i].id }}" color="danger" pin="true"></ion-range></td>
+			<td><ion-range [(ngModel)]="batters[i].defense" name="defense{{ batters[i].id }}" color="danger" pin="true"></ion-range></td>
+		</tr>
+		<tr class="batterbreak"><td colspan="6"></td></tr>
+
+		</table>
+		</td></tr>
+		
+
+		<tr>
+			<td colspan="6">
+			<ion-item no-lines>
+		      Create Pitchers
+		      </ion-item>
+		    </td>
+		</tr>
+		<tr *ngFor="let i of pitcherids"><td colspan="6">
+
+		<table style="width:100%;" >
+      	<tr>
+			<td colspan="6">
+		      <ion-item no-lines class="ctdark pname">
+		        <ion-label>Pitcher Name:</ion-label>
+		        <ion-input type="text" [(ngModel)]="pitchers[i].name" name="name{{ pitchers[i].id }}"></ion-input>
+		      </ion-item>
+		    </td>
+		</tr>
+
+		<tr  class="ctdark">
+			<td style="width:10%;"><ion-label>S/R</ion-label></td>
+			<td style="width:10%;"><ion-label>Thr</ion-label></td>
+			<td style="width:20%;"><ion-label>Velocity</ion-label></td>
+			<td style="width:20%;"><ion-label>Control</ion-label></td>
+			<td style="width:20%;"><ion-label>Movement</ion-label></td>
+			<td style="width:20%;"><ion-label>Stamina</ion-label></td>
+		</tr>
+		<tr class="ctdark">
+			<td  class="ctdark">
+			<ion-item no-lines class="ctdark">
+			  <ion-select [(ngModel)]="pitchers[i].position" name="position{{ pitchers[i].id }}">
+			    <ion-option value="SP">SP</ion-option>
+			    <ion-option value="RP">RP</ion-option>
+			    <ion-option value="CL">CL</ion-option>
+
+			  </ion-select>
+			  </ion-item>
+			</td>
+			<td  class="ctdark">
+			<ion-item no-lines class="ctdark">
+			  <ion-select [(ngModel)]="pitchers[i].throws" name="bats{{ pitchers[i].id }}">
+			    <ion-option value="R">R</ion-option>
+			    <ion-option value="L">L</ion-option>
+			    <ion-option value="S">S</ion-option>
+			  </ion-select>
+			  </ion-item>
+			</td>
+			<td  class="ctdark"><ion-range min=70 max=100 [(ngModel)]="pitchers[i].velocity"  (ionChange)="updateSlider(i,'v')" name="velocity{{ pitchers[i].id }}" color="danger" pin="true"></ion-range></td>
+			<td><ion-range step=4 [(ngModel)]="pitchers[i].control"   (ionChange)="updateSlider(i,'c')"name="control{{ pitchers[i].id }}" color="danger" pin="true"></ion-range></td>
+			<td><ion-range step=4 [(ngModel)]="pitchers[i].movement"  (ionChange)="updateSlider(i,'m')" name="movement{{ pitchers[i].id }}" color="danger" pin="true"></ion-range></td>
+			<td><ion-range step=4 [(ngModel)]="pitchers[i].stamina" name="stamina{{ pitchers[i].id }}" color="danger" pin="true"></ion-range></td>
+		</tr>
+		<tr  class="ctdark">
+			<td colspan="2"><ion-label>Pitch Name</ion-label></td>
+			<td style="width:20%;"><ion-label>Velocity</ion-label></td>
+			<td style="width:20%;"><ion-label>Control</ion-label></td>
+			<td style="width:20%;"><ion-label>H Move</ion-label></td>
+			<td style="width:20%;"><ion-label>V Move</ion-label></td>
+			
+		</tr>
+		<tr class="pitchdark">
+			<td  colspan="2">
+			<ion-item no-lines class=" pitchNameItem">
+			  <ion-input type="text" [(ngModel)]="pitchers[i].pitch[0].name" name="namep{{ pitchers[i].id }}{{ pitchers[i].pitch[0].id }}"></ion-input>
+			  </ion-item>
+			</td>
+
+			<td ><ion-range min=50 max=100 class="pitchNameRange" [(ngModel)]="pitchers[i].pitch[0].velocity" name="velocity{{ pitchers[i].id }}{{ pitchers[i].pitch[0].id }}" color="danger" pin="true"></ion-range></td>
+			<td><ion-range min=0 max=100 class="pitchNameRange" [(ngModel)]="pitchers[i].pitch[0].control" name="control{{ pitchers[i].id }}{{ pitchers[i].pitch[0].id }}" color="danger" pin="true"></ion-range></td>
+			<td><ion-range min=-50 max=50 class="pitchNameRange" [(ngModel)]="pitchers[i].pitch[0].movement[0]" name="hmove{{ pitchers[i].id }}{{ pitchers[i].pitch[0].id }}" color="danger" pin="true"></ion-range></td>
+			<td><ion-range min=-50 max=50 class="pitchNameRange" [(ngModel)]="pitchers[i].pitch[0].movement[1]" name="vmove{{ pitchers[i].id }}{{ pitchers[i].pitch[0].id }}" color="danger" pin="true"></ion-range></td>
+		</tr>
+		<tr class="ctdark">
+			<td  colspan="2">
+			<ion-item no-lines class=" pitchNameItem">
+			  <ion-input type="text" [(ngModel)]="pitchers[i].pitch[1].name" name="namep{{ pitchers[i].id }}{{ pitchers[i].pitch[1].id }}"></ion-input>
+			  </ion-item>
+			</td>
+
+			<td ><ion-range min=50 max=100 class="pitchNameRange" [(ngModel)]="pitchers[i].pitch[1].velocity" name="velocity{{ pitchers[i].id }}{{ pitchers[i].pitch[1].id }}" color="danger" pin="true"></ion-range></td>
+			<td><ion-range min=0 max=100 class="pitchNameRange" [(ngModel)]="pitchers[i].pitch[1].control" name="control{{ pitchers[i].id }}{{ pitchers[i].pitch[1].id }}" color="danger" pin="true"></ion-range></td>
+			<td><ion-range min=-50 max=50 class="pitchNameRange" [(ngModel)]="pitchers[i].pitch[1].movement[0]" name="hmove{{ pitchers[i].id }}{{ pitchers[i].pitch[1].id }}" color="danger" pin="true"></ion-range></td>
+			<td><ion-range min=-50 max=50 class="pitchNameRange" [(ngModel)]="pitchers[i].pitch[1].movement[1]" name="vmove{{ pitchers[i].id }}{{ pitchers[i].pitch[1].id }}" color="danger" pin="true"></ion-range></td>
+		</tr>
+		<tr class="pitchdark">
+			<td  colspan="2">
+			<ion-item no-lines class=" pitchNameItem">
+			  <ion-input type="text" [(ngModel)]="pitchers[i].pitch[2].name" name="namep{{ pitchers[i].id }}{{ pitchers[i].pitch[2].id }}"></ion-input>
+			  </ion-item>
+			</td>
+
+			<td ><ion-range min=50 max=100 class="pitchNameRange" [(ngModel)]="pitchers[i].pitch[2].velocity" name="velocity{{ pitchers[i].id }}{{ pitchers[i].pitch[2].id }}" color="danger" pin="true"></ion-range></td>
+			<td><ion-range min=0 max=100 class="pitchNameRange" [(ngModel)]="pitchers[i].pitch[2].control" name="control{{ pitchers[i].id }}{{ pitchers[i].pitch[2].id }}" color="danger" pin="true"></ion-range></td>
+			<td><ion-range min=-50 max=50 class="pitchNameRange" [(ngModel)]="pitchers[i].pitch[2].movement[0]" name="hmove{{ pitchers[i].id }}{{ pitchers[i].pitch[2].id }}" color="danger" pin="true"></ion-range></td>
+			<td><ion-range min=-50 max=50 class="pitchNameRange" [(ngModel)]="pitchers[i].pitch[2].movement[1]" name="vmove{{ pitchers[i].id }}{{ pitchers[i].pitch[2].id }}" color="danger" pin="true"></ion-range></td>
+		</tr>
+		<tr class="ctdark">
+			<td  colspan="2">
+			<ion-item no-lines class=" pitchNameItem">
+			  <ion-input type="text" [(ngModel)]="pitchers[i].pitch[3].name" name="namep{{ pitchers[i].id }}{{ pitchers[i].pitch[3].id }}"></ion-input>
+			  </ion-item>
+			</td>
+
+			<td ><ion-range min=50 max=100 class="pitchNameRange" [(ngModel)]="pitchers[i].pitch[3].velocity" name="velocity{{ pitchers[i].id }}{{ pitchers[i].pitch[3].id }}" color="danger" pin="true"></ion-range></td>
+			<td><ion-range min=0 max=100 class="pitchNameRange" [(ngModel)]="pitchers[i].pitch[3].control" name="control{{ pitchers[i].id }}{{ pitchers[i].pitch[3].id }}" color="danger" pin="true"></ion-range></td>
+			<td><ion-range min=-50 max=50 class="pitchNameRange" [(ngModel)]="pitchers[i].pitch[3].movement[0]" name="hmove{{ pitchers[i].id }}{{ pitchers[i].pitch[3].id }}" color="danger" pin="true"></ion-range></td>
+			<td><ion-range min=-50 max=50 class="pitchNameRange" [(ngModel)]="pitchers[i].pitch[3].movement[1]" name="vmove{{ pitchers[i].id }}{{ pitchers[i].pitch[3].id }}" color="danger" pin="true"></ion-range></td>
+		</tr>
+		<tr class="pitchdark">
+			<td  colspan="2">
+			<ion-item no-lines class=" pitchNameItem">
+			  <ion-input type="text" [(ngModel)]="pitchers[i].pitch[4].name" name="namep{{ pitchers[i].id }}{{ pitchers[i].pitch[4].id }}"></ion-input>
+			  </ion-item>
+			</td>
+
+			<td ><ion-range min=50 max=100 class="pitchNameRange" [(ngModel)]="pitchers[i].pitch[4].velocity" name="velocity{{ pitchers[i].id }}{{ pitchers[i].pitch[4].id }}" color="danger" pin="true"></ion-range></td>
+			<td><ion-range min=0 max=100 class="pitchNameRange" [(ngModel)]="pitchers[i].pitch[4].control" name="control{{ pitchers[i].id }}{{ pitchers[i].pitch[4].id }}" color="danger" pin="true"></ion-range></td>
+			<td><ion-range min=-50 max=50 class="pitchNameRange" [(ngModel)]="pitchers[i].pitch[4].movement[0]" name="hmove{{ pitchers[i].id }}{{ pitchers[i].pitch[4].id }}" color="danger" pin="true"></ion-range></td>
+			<td><ion-range min=-50 max=50 class="pitchNameRange" [(ngModel)]="pitchers[i].pitch[4].movement[1]" name="vmove{{ pitchers[i].id }}{{ pitchers[i].pitch[4].id }}" color="danger" pin="true"></ion-range></td>
+		</tr>
+		<tr class="pitchbreak"><td colspan="6"></td></tr>
+
+		
+
+
+
+		
+		</table>
+		</td></tr>
+
+		<tr>
+			<td colspan="6"><button ion-button type="submit" block>Create Team</button></td>
+		</tr>
+	</table>
+</form>
+
+</ion-content>

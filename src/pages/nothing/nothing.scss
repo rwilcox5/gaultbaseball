@@ -1,0 +1,21 @@
+page-nothing {
+table.nothing, th.nothing, td.nothing {
+   border: 1px solid black;
+}
+table.nothing {
+    width: 100%;
+}
+th.nothing {
+	width:6%;
+	text-align: center;
+	text-decoration: bold;
+}
+td.nothing {
+	width:6%;
+	text-align: center;
+}
+td.team {
+	width: 28%;
+	text-align: left;
+}
+}

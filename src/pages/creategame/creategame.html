@@ -1,0 +1,53 @@
+<!--
+  Generated template for the CreategamePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+
+<ion-content padding>
+  <h3>New Game</h3>
+
+  <ion-item>
+  <ion-label>Choose Opponent</ion-label>
+  <ion-select [(ngModel)]="opponent">
+    <ion-option *ngFor="let team of teams" value="{{team.teamId}}">{{team.name}}</ion-option>
+  </ion-select>
+</ion-item>
+<ion-item>
+  <ion-label>Choose Your Team</ion-label>
+  <ion-select [(ngModel)]="myteam" (ionChange)="chooseTeam()">
+    <ion-option *ngFor="let team of teams" value="{{team.teamId}}">{{team.name}}</ion-option>
+  </ion-select>
+</ion-item>
+
+<ion-item>
+  <ion-label>Choose Your Starting Pitcher</ion-label>
+  <ion-select [(ngModel)]="mypitcher">
+    <ion-option *ngFor="let pitcher of pitchers" value="{{pitcher.id}}">{{pitcher.name}}</ion-option>
+  </ion-select>
+</ion-item>
+
+<ion-list>
+  <ion-list-header>Create Lineup</ion-list-header>
+  <ion-item-group reorder="true" (ionItemReorder)="reorderItems($event)" *ngIf="teamSelected()">
+    <ion-item *ngFor="let batter of batters"><ion-label>{{ batter.order }} {{ batter.name }}</ion-label>
+    <ion-select [(ngModel)]="position[batter.id]">
+    	<ion-option value="C">C</ion-option>
+    	<ion-option value="1B">1B</ion-option>
+    	<ion-option value="2B">2B</ion-option>
+    	<ion-option value="SS">SS</ion-option>
+    	<ion-option value="3B">3B</ion-option>
+    	<ion-option value="LF">LF</ion-option>
+    	<ion-option value="CF">CF</ion-option>
+    	<ion-option value="RF">RF</ion-option>
+    	<ion-option value="DH">DH</ion-option>
+  	</ion-select>
+    </ion-item>
+  </ion-item-group>
+</ion-list>
+
+  <button ion-button block on-tap="newGame()" id="createOpponent">New Game</button>
+
+
+</ion-content>
