@@ -85,7 +85,7 @@ export class CentrallogicComponent {
 	       	       csequence.push([Math.floor((pitch[0]-pitch[2])*100./pitch[4]),Math.floor((pitch[1]-pitch[3])*100./pitch[4]),pitch[5],pitch[6]]);
 			       this.storage.set('currentSequence'+ccc,csequence); currentSequence = csequence;
 
-			       let theresult = determinePlay(this.events,pitch,batter,situation,linescore,ccc);
+			       let theresult = determinePlay(this.events,pitch,batter,situation,linescore,ccc,[situation[0],situation[1]]);
 
 			       this.storage.set('situation'+ccc,theresult[0]);
 			       this.storage.set('linescore'+ccc,theresult[1]);
@@ -110,7 +110,7 @@ export class CentrallogicComponent {
 
 }
 
-function determinePlay(myevent,pitch,batter,situation,linescore,gtype){
+function determinePlay(myevent,pitch,batter,situation,linescore,gtype,count){
 	let situationhold = situation;
 	document.getElementById('lastpitch').innerHTML = '';
 	document.getElementById('lastresult').innerHTML = '';
@@ -119,14 +119,14 @@ function determinePlay(myevent,pitch,batter,situation,linescore,gtype){
 
 
 	let isStrike = makeCall(touchx,touchy);
-    let isSwing = makeSwing(touchx,touchy,batter.swingMap);
-    if (isSwing=='swing'){
-        let isContact = makeContact(touchx,touchy,batter.contactMap,batter.inplayMap);
-        if (isContact=='fair'){
+    let isSwing = makeSwing(touchx,touchy,batter.swingMap,count);
+    if (isSwing=='Swing'){
+        let isContact = makeContact(touchx,touchy,batter.contactMap,batter.inplayMap,batter.bats);
+        if (isContact=='Fair'){
         	if (gtype=='27'){console.log('You Lose.'); myevent.publish('central27','loss');}
 
 
-            let isPlay = makePlay(touchx,touchy);
+            let isPlay = makePlay(touchx,touchy,batter.singleMap,batter.doubleMap,batter.tripleMap,batter.hrMap);
             if (isPlay=='out'){situation[0] = 0; situation[1]=0; document.getElementById('lastpitch').innerHTML = 'Out'; 
             if (situation[2]==2) {situation[2]=0; situation[4]=[0,0,0]; document.getElementById('lastpitch').innerHTML = 'Inning Over';
 	            if (linescore[0].length<9){
@@ -161,8 +161,8 @@ function determinePlay(myevent,pitch,batter,situation,linescore,gtype){
             else { linescore = linescoreChange(isPlay,situationhold,linescore); situation = situationChange(isPlay, situation);}
             situation[3]++;
         }
-        else if (isContact=='foul'){document.getElementById('lastpitch').innerHTML = 'Foul Ball'; if (situation[1]<2) {situation[1]++;}}
-        else {let theresult= noContact('strike',situation,linescore,myevent,gtype); situation= theresult[0]; linescore = theresult[1];}
+        else if (isContact=='Foul'){document.getElementById('lastpitch').innerHTML = 'Foul Ball'; if (situation[1]<2) {situation[1]++;}}
+        else {let theresult= noContact('Strike',situation,linescore,myevent,gtype); situation= theresult[0]; linescore = theresult[1];}
     }
     else{
     	let theresult= noContact(isStrike,situation,linescore,myevent,gtype); situation= theresult[0];
@@ -179,73 +179,59 @@ function determinePlay(myevent,pitch,batter,situation,linescore,gtype){
 }
 
 function makeCall(tx,ty){
-    let thecall = 'ball';
+    let thecall = 'Ball';
 
-   	let strikeProb = Math.min(Math.max((8.+tx)/16.,0),1)*Math.min(Math.max((8.+ty)/16.,0),1)*Math.min(Math.max((8.+100-tx)/16.,0),1)*Math.min(Math.max((8.+100-ty)/16.,0),1);
-   	if (Math.random()<strikeProb){thecall='strike';}
-    console.log(strikeProb);
+   	let StrikeProb = Math.min(Math.max((8.+tx)/16.,0),1)*Math.min(Math.max((8.+ty)/16.,0),1)*Math.min(Math.max((8.+100-tx)/16.,0),1)*Math.min(Math.max((8.+100-ty)/16.,0),1);
+   	if (Math.random()<StrikeProb){thecall='Strike';}
+    console.log(StrikeProb);
     return thecall;
 }
 
-function makeSwing(tx,ty,swingMap){
-    let theSwing = 'take';
 
-    let percentSwing = swingPercentage(swingMap,tx,ty);
-    if (Math.random()<percentSwing){
-    theSwing = 'swing';
-    }
-
-    console.log(theSwing);
-    return theSwing;
- }
-
- function makeContact(tx,ty,contactMap,inplayMap){
-    let theContact = 'miss';
+ function makeContact(tx,ty,contactMap,inplayMap,bats){
+ 	if (bats=='R'){
+ 	contactMap[0]=60;
+ 	}
+ 	else{
+ 	contactMap[0]=40;
+ 	}
+    let theContact = 'Miss';
     let percentContact = swingPercentage(contactMap,tx,ty);
     if (Math.random()<percentContact){
     	let percentFair = swingPercentage(inplayMap,tx,ty);
     	if (Math.random()<percentFair){
-    		theContact = 'fair';
+    		theContact = 'Fair';
     	}
     	else{
-    		theContact = 'foul';
+    		theContact = 'Foul';
     	}
     
     }
 
-    console.log(theContact);
     return theContact;
  }
 
-  function makePlay(tx,ty){
-    let thePlay = 'out';
+  function makePlay(tx,ty,SingleMap,DoubleMap,TripleMap,hrMap){
+    let thePlay = 'Out';
 
-    let midpointx = 50.;
-    let midpointy = 50.;
-    let midpointDist = Math.sqrt((tx-midpointx)**2+(ty-midpointy)**2);
-    let szDist = Math.min(tx,ty,100.-tx,100.-ty);
-    let percent1b = szDist/(szDist+midpointDist)/3+.2;
-    let percent2b = szDist/(szDist+midpointDist)/4+.1;
-    let percent3b = szDist/(szDist+midpointDist)/6;
-    let percenthr = szDist/(szDist+midpointDist)/3+.2;
-    if (Math.random()<percent1b){
+	let xr = Math.random();
+    if (xr<swingPercentage(SingleMap,tx,ty)){
     thePlay = 'Single';
     }
-    else if (Math.random()<percent2b){
+    else if (xr<swingPercentage(SingleMap,tx,ty)+swingPercentage(DoubleMap,tx,ty)){
     thePlay = 'Double';
     }
-    else if (Math.random()<percent3b){
+    else if (xr<swingPercentage(SingleMap,tx,ty)+swingPercentage(DoubleMap,tx,ty)+swingPercentage(TripleMap,tx,ty)){
     thePlay = 'Triple';
     }
-    else if (Math.random()<percenthr){
-    thePlay = 'Home run';
+    else if (xr<swingPercentage(SingleMap,tx,ty)+swingPercentage(DoubleMap,tx,ty)+swingPercentage(TripleMap,tx,ty)+swingPercentage(hrMap,tx,ty)){
+    thePlay = 'Home Run';
     }
-    console.log(thePlay);
     return thePlay;
  }
 
  function noContact(isStrike, situation, linescore,myevent,gtype){
-	if (situation[0]==3 && isStrike=='ball'){
+	if (situation[0]==3 && isStrike=='Ball'){
 		situation[0]=0;
 		situation[1]=0;
 		if (situation[4][2]==0){situation[4][2]=1;}
@@ -256,7 +242,7 @@ function makeSwing(tx,ty,swingMap){
 		if (gtype=='27'){myevent.publish('central27','loss');}
 		situation[3]++;
 	}
-	else if (situation[1]==2 && isStrike=='strike'){
+	else if (situation[1]==2 && isStrike=='Strike'){
 		situation[0]=0;
 		situation[1]=0;
 		if (situation[2]==2){
@@ -299,7 +285,7 @@ function makeSwing(tx,ty,swingMap){
 		if (gtype=='27'){myevent.publish('central27','k');}
 		situation[3]++;
 	}
-	else if (isStrike=='strike') {
+	else if (isStrike=='Strike') {
 		situation[1]++;
 		document.getElementById('lastpitch').innerHTML = 'Strike '.concat(situation[1].toString());
 	}
@@ -376,6 +362,64 @@ function makeSwing(tx,ty,swingMap){
 function swingPercentage([maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey],xL,yL){
    let spx = (minValuex-maxValuex)/(100)**2*(xL-maxLocationx)**2+maxValuex;
    let spy = (minValuey-maxValuey)/(100)**2*(yL-maxLocationy)**2+maxValuey;
-   let swingPercentage = Math.max(spx*spy,0);
+   let swingPercentage = Math.max(spx,0)*Math.max(spy,0);
    return swingPercentage;
 }
+
+
+
+function makeSwing(tx,ty,swingMap,count){
+    let theSwing = 'take';
+    let LswingMap = [];
+    let i = 0;
+    for (i=0;i<6;i++){
+    LswingMap.push(swingMap[i]);
+    }
+
+    let percentSwing = 0;
+    if (count[1]==2){
+    LswingMap[2]=swingMap[2]+.11;
+    LswingMap[3]=swingMap[3]+.11;
+    LswingMap[4]=swingMap[4]+.2;
+    LswingMap[5]=swingMap[5]+.2;
+    }
+    else if (count[1]==1 && (count[0]==1 || count[0]==2)){
+    LswingMap[2]=swingMap[2]+.08;
+    LswingMap[3]=swingMap[3]+.08;
+    LswingMap[4]=swingMap[4]+.12;
+    LswingMap[5]=swingMap[5]+.12;
+    }
+    else if (count[1]==0 && (count[0]==1 || count[0]==2)){
+    LswingMap[2]=swingMap[2]-.025;
+    LswingMap[3]=swingMap[3]-.025;
+    LswingMap[4]=swingMap[4]-.1;
+    LswingMap[5]=swingMap[5]-.1;
+    }
+    else if (count[1]==1 && (count[0]==3 || count[0]==0)){
+
+    LswingMap[2]=swingMap[2]+.075;
+    LswingMap[3]=swingMap[3]+.075;
+    LswingMap[4]=swingMap[4]+.025;
+    LswingMap[5]=swingMap[5]+.025;
+    }
+    else if (count[1]==0 && count[0]==3){
+    LswingMap[2]=swingMap[2]-.45;
+    LswingMap[3]=swingMap[3]-.45;
+    LswingMap[4]=swingMap[4]-.5;
+    LswingMap[5]=swingMap[5]-.5;
+    }
+    else if (count[1]==0 && count[0]==0){
+    LswingMap[2]=swingMap[2]-.16;
+    LswingMap[3]=swingMap[3]-.16;
+    LswingMap[4]=swingMap[4]-.21;
+    LswingMap[5]=swingMap[5]-.21;
+    
+    }
+
+    percentSwing = swingPercentage([LswingMap[0],LswingMap[1],LswingMap[2],LswingMap[3],LswingMap[4],LswingMap[5]],tx,ty);
+    if (Math.random()<percentSwing){
+    theSwing = 'Swing';
+    }
+
+    return theSwing;
+ }

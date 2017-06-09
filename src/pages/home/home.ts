@@ -78,6 +78,7 @@ loadSwing(){
 	   		ctx.fillRect(ixi*2+100,iyi*2+100,2,2);
 	   		}
 	   }
+	   let outcomeList = ['Single','Double','Triple','Home Run','Strikeout','Walk','Out','Single','Double','Triple','Home Run','Strikeout','Walk','Out','Single','Double','Triple','Home Run','Strikeout','Walk','Out'];
 	   for (ixi=-5;ixi<15;ixi++){
 	   for (iyi=-5;iyi<15;iyi++){
 
@@ -94,14 +95,13 @@ loadSwing(){
 	   		let tbPt = 0;
 	   		let ttPt = 0;
 	   		let i = 0;
-	   		for (i=0;i<10;i++){
-	   			let resultAB = fullAB(ixi*10,iyi*10,batter);
-	   			if (resultAB == 'Out'){tbPt++;}
-
+	   		for (i=0;i<10000;i++){
+	   			let resultAB = oneAB(batter);
+	   			if (resultAB == outcomeList[ixi+5]){tbPt++;}
 
 
 	   		}
-	   		slgp = (tbPt/10000.).toFixed(2).substring(2,); 
+	   		slgp = (tbPt/10000.).toFixed(3).substring(2,); 
 
 	   		ctx.fillStyle='#FFFFFF';
 	   		ctx.font = "10px Arial";
@@ -509,10 +509,10 @@ function createName(){
 function createSwing(contact, power){
 	let maxLocationx = 50;
     let maxLocationy = 40;
-    let maxValuex = .84;
-    let maxValuey = .89;
-    let minValuex = .18;
-    let minValuey = .12;
+    let maxValuex = .85;
+    let maxValuey = .9;
+    let minValuex = .25;
+    let minValuey = .16;
     return [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
 }
 
@@ -521,8 +521,8 @@ function createContact(contact, power){
     let maxLocationy = 65;
     let maxValuex = .92;
     let maxValuey = .95;
-    let minValuex = .3;
-    let minValuey = .25;
+    let minValuex = .4;
+    let minValuey = .3;
     return [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
 }
 
@@ -539,10 +539,10 @@ function createInplay(contact, power){
 function createSingle(contact, power){
 	let maxLocationx = 50;
     let maxLocationy = 60;
-    let maxValuex = .46;
-    let maxValuey = .46;
-    let minValuex = .15;
-    let minValuey = .1;
+    let maxValuex = .465;
+    let maxValuey = .465;
+    let minValuex = .25;
+    let minValuey = .15;
     return [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
 }
 
@@ -575,7 +575,49 @@ function createHr(contact, power){
     let minValuey = -.1;
     return [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
 }
-
+function oneAB(batter){
+	let Balls = 0;
+	let Strikes = 0;
+	let moreAB = true;
+	let result = [];
+	while (moreAB){
+	let randLoc = Math.random();
+	let probLoc = [.13,.08,.03,.04,.03,.05,.06,.05,.05,.05,.05,.18,.20];
+	let i =0;
+	let sumProb = 0;
+	let zone = 12;
+	let tx = 0;
+	let ty = 0;
+	for (i=0;i<13;i++){
+		sumProb = sumProb+probLoc[i];
+		if (randLoc<sumProb){
+			zone = i;
+			break;
+		}
+	}
+	if (zone==2){tx=Math.floor(Math.random()*33); ty= Math.floor(Math.random()*33);}
+	else if (zone==3){tx=33+Math.floor(Math.random()*33); ty= Math.floor(Math.random()*33);}
+	else if (zone==4){tx=67+Math.floor(Math.random()*33); ty= Math.floor(Math.random()*33);}
+	else if (zone==5){tx=Math.floor(Math.random()*33); ty= 33+Math.floor(Math.random()*33);}
+	else if (zone==6){tx=33+Math.floor(Math.random()*33); ty= 33+Math.floor(Math.random()*33);}
+	else if (zone==7){tx=67+Math.floor(Math.random()*33); ty= 33+Math.floor(Math.random()*33);}
+	else if (zone==8){tx=Math.floor(Math.random()*33); ty= 67+Math.floor(Math.random()*33);}
+	else if (zone==9){tx=33+Math.floor(Math.random()*33); ty= 67+Math.floor(Math.random()*33);}
+	else if (zone==10){tx=67+Math.floor(Math.random()*33); ty= 67+Math.floor(Math.random()*33);}
+	else if (zone==0){tx=-33+Math.floor(Math.random()*33*4); ty= -33+Math.floor(Math.random()*33);}
+	else if (zone==1){tx=100+Math.floor(Math.random()*33); ty= -33+Math.floor(Math.random()*33*4);}
+	else if (zone==11){tx=-33+Math.floor(Math.random()*33); ty= Math.floor(Math.random()*33*4);}
+	else if (zone==12){tx=Math.floor(Math.random()*33*4); ty= 100+Math.floor(Math.random()*33);}
+	result = pitch(tx,ty,Balls,Strikes,batter);
+	moreAB = result[2];
+	if (moreAB){
+	Balls = result[0];
+	Strikes = result[1];
+	}
+	}
+	return result[3];
+	
+}
 function fullAB(tx,ty,batter){
 	let Balls = 0;
 	let Strikes = 0;
@@ -594,11 +636,11 @@ function fullAB(tx,ty,batter){
 
 function pitch(tx,ty,Balls,Strikes,batter){
 	let result = determinePlay(tx,ty,Balls,Strikes,batter);
-	console.log(result);
-	if (result == 'Ball'){if (Balls==3){return [0,0,false,'Walk'];} else {return [Balls++,Strikes,true,''];}}
-	else if (result == 'Swinging Strike'){if (Strikes==2){return [0,0,false,'Strikeout'];} else {return [Balls,Strikes++,true,''];}}
-	else if (result == 'Strike'){if (Strikes==2){return [0,0,false,'Strikeout'];} else {return [Balls,Strikes++,true,''];}}
-	else if (result == 'Foul'){if (Strikes==2){return [0,0,true,''];} else {return [Balls,Strikes++,true,''];}}
+
+	if (result == 'Ball'){if (Balls==3){return [0,0,false,'Walk'];} else {return [++Balls,Strikes,true,''];}}
+	else if (result == 'Swinging Strike'){if (Strikes==2){return [0,0,false,'Strikeout'];} else {return [Balls,++Strikes,true,''];}}
+	else if (result == 'Strike'){if (Strikes==2){return [0,0,false,'Strikeout'];} else {return [Balls,++Strikes,true,''];}}
+	else if (result == 'Foul'){if (Strikes==2){return [0,0,true,''];} else {return [Balls,++Strikes,true,''];}}
 	else {return [0,0,false,result];}
 	
 }
@@ -610,7 +652,7 @@ function determinePlay(touchx,touchy,Balls, Strikes,batter){
     let isSwing = makeSwing(touchx,touchy,batter.swingMap,[Balls,Strikes]);
     if (isSwing=='swing'){
         let isContact = makeContact(touchx,touchy,batter.contactMap,batter.inplayMap,batter.bats);
-        if (isContact=='fair'){
+        if (isContact=='Fair'){
             let isPlay = makePlay(touchx,touchy,batter.SingleMap,batter.DoubleMap,batter.TripleMap,batter.hrMap);
             return isPlay;
         }
@@ -696,12 +738,12 @@ function makeSwing(tx,ty,swingMap,count){
  	else{
  	contactMap[0]=40;
  	}
-    let theContact = 'miss';
+    let theContact = 'Miss';
     let percentContact = swingPercentage(contactMap,tx,ty);
     if (Math.random()<percentContact){
     	let percentFair = swingPercentage(inplayMap,tx,ty);
     	if (Math.random()<percentFair){
-    		theContact = 'fair';
+    		theContact = 'Fair';
     	}
     	else{
     		theContact = 'Foul';

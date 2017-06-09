@@ -312,61 +312,15 @@ function createBatter(batter,init=false){
     statsLhold['obp'] = (statsLhold.n1b+statsLhold.n2b+statsLhold.n3b+statsLhold.hr+statsLhold.bb+statsLhold.hbp)/statsLhold.pa;
     statsLhold['slg'] = (statsLhold.n1b+2*statsLhold.n2b+3*statsLhold.n3b+4*statsLhold.hr)/statsLhold.ab;
 
-    let maxLocationx = 50;
-    let maxLocationy = 50;
-    let maxValuex = .92;
-    let maxValuey = .92;
-    let minValuex = .06;
-    let minValuey = .06;
-    let swingMap = [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
-
-    maxLocationx = 50;
-    maxLocationy = 40;
-    maxValuex = .92;
-    maxValuey = .92;
-    minValuex = .2;
-    minValuey = .2;
-    let contactMap = [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
-
-    maxLocationx = 50;
-    maxLocationy = 40;
-    maxValuex = .8;
-    maxValuey = .8;
-    minValuex = .05;
-    minValuey = .05;
-    let inplayMap = [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
-
-    maxLocationx = 50;
-    maxLocationy = 60;
-    maxValuex = .45;
-    maxValuey = .45;
-    minValuex = .1;
-    minValuey = .025;
-    let singleMap = [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
-
-    maxLocationx = 50;
-    maxLocationy = 50;
-    maxValuex = .25;
-    maxValuey = .25;
-    minValuex = .1;
-    minValuey = .014;
-    let doubleMap = [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
-
-    maxLocationx = 50;
-    maxLocationy = 50;
-    maxValuex = .08;
-    maxValuey = .08;
-    minValuex = .1;
-    minValuey = .005;
-    let tripleMap = [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
-
-    maxLocationx = 50;
-    maxLocationy = 40;
-    maxValuex = .24;
-    maxValuey = .24;
-    minValuex = .025;
-    minValuey = .01;
-    let hrMap = [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
+    let contact = batter.contact;
+    let power = batter.power;
+    let swingMap = createSwing(contact,power);
+    let contactMap = createContact(contact,power);
+    let inplayMap = createInplay(contact,power);
+    let singleMap = createSingle(contact,power);
+    let doubleMap = createDouble(contact,power);
+    let tripleMap = createTriple(contact,power);
+    let hrMap = createHr(contact,power);
 
 
     return {'id':id,'order':order,'position':position,'name':pname,'stats':statshold,'statsL':statsLhold,'statsR':statsRhold,'bats':bats,'zones':zoneshold, 'swingMap':swingMap, 'contactMap':contactMap, 'inplayMap':inplayMap, 'singleMap':singleMap, 'doubleMap':doubleMap, 'tripleMap':tripleMap, 'hrMap':hrMap,'contact':batter.contact,'power':batter.power,'speed':batter.speed,'defense':batter.defense};
@@ -472,5 +426,75 @@ function createName(){
 		sumRunning += parseFloat(firstNames[i][1]);
 	}
 	return firstName+' Johnson';
+}
+
+function createSwing(contact, power){
+	let maxLocationx = 50;
+    let maxLocationy = 40;
+    let maxValuex = .84;
+    let maxValuey = .89;
+    let minValuex = .18;
+    let minValuey = .12;
+    return [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
+}
+
+function createContact(contact, power){
+	let maxLocationx = 60;
+    let maxLocationy = 65;
+    let maxValuex = .92;
+    let maxValuey = .95;
+    let minValuex = .3;
+    let minValuey = .25;
+    return [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
+}
+
+function createInplay(contact, power){
+	let maxLocationx = 50;
+    let maxLocationy = 65;
+    let maxValuex = .77;
+    let maxValuey = .78;
+    let minValuex = .35;
+    let minValuey = .2;
+    return [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
+}
+
+function createSingle(contact, power){
+	let maxLocationx = 50;
+    let maxLocationy = 60;
+    let maxValuex = .46;
+    let maxValuey = .46;
+    let minValuex = .15;
+    let minValuey = .1;
+    return [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
+}
+
+function createDouble(contact, power){
+	let maxLocationx = 50;
+    let maxLocationy = 60;
+    let maxValuex = .26;
+    let maxValuey = .28;
+    let minValuex = .14;
+    let minValuey = .07;
+    return [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
+}
+
+function createTriple(contact, power){
+	let maxLocationx = 50;
+    let maxLocationy = 50;
+    let maxValuex = .094;
+    let maxValuey = .094;
+    let minValuex = .027;
+    let minValuey = .008;
+    return [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
+}
+
+function createHr(contact, power){
+	let maxLocationx = 50;
+    let maxLocationy = 40;
+    let maxValuex = .27;
+    let maxValuey = .27;
+    let minValuex = -.04;
+    let minValuey = -.1;
+    return [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
 }
 
