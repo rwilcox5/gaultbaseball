@@ -24,7 +24,7 @@ export class Bust27Page {
   for (i=0;i<27;i++){  this.b.push(' '); }
   this.storage.ready().then(() => {
        storage.get('situation'+'27').then(sitval => {
-       let nks = sitval[0][0];       
+       let nks = sitval[3];       
        let i = 0;
        for (i=0;i<nks;i++){
        this.b[i] = 'K';
@@ -42,7 +42,7 @@ export class Bust27Page {
   let ii = 0;
   for (i=0;i<27;i++){if (this.b[i]==' '){this.b[i]='K';ii = i+1;i=27;} else if (i==25){this.b[26]='K';console.log('You Win');}}
   this.storage.ready().then(() => {
-       storage.set('situation'+'27',ii);
+       storage.set('situation'+'27',[0,0,0,ii,[0,0,0]]);
 
   	})
   }

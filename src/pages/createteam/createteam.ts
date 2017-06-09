@@ -319,7 +319,7 @@ function createBatter(batter,init=false){
     let inplayMap = createInplay(contact,power);
     let singleMap = createSingle(contact,power);
     let doubleMap = createDouble(contact,power);
-    let tripleMap = createTriple(contact,power);
+    let tripleMap = createTriple(contact,power,batter.speed);
     let hrMap = createHr(contact,power);
 
 
@@ -431,20 +431,20 @@ function createName(){
 function createSwing(contact, power){
 	let maxLocationx = 50;
     let maxLocationy = 40;
-    let maxValuex = .84;
-    let maxValuey = .89;
-    let minValuex = .18;
-    let minValuey = .12;
+    let maxValuex = .85*Math.sqrt(Math.max(contact*.005+.6,.35));
+    let maxValuey = .9*Math.sqrt(Math.max(contact*.005+.6,.35));
+    let minValuex = .25/Math.sqrt(Math.max(contact*.005+.6,.35));
+    let minValuey = .16/Math.sqrt(Math.max(contact*.005+.6,.35));
     return [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
 }
 
 function createContact(contact, power){
 	let maxLocationx = 60;
     let maxLocationy = 65;
-    let maxValuex = .92;
-    let maxValuey = .95;
-    let minValuex = .3;
-    let minValuey = .25;
+    let maxValuex = .92*Math.sqrt(Math.max(contact*.005+.6,.35));
+    let maxValuey = .95*Math.sqrt(Math.max(contact*.005+.6,.35));
+    let minValuex = .4*Math.sqrt(Math.max(contact*.005+.6,.35));
+    let minValuey = .3*Math.sqrt(Math.max(contact*.005+.6,.35));
     return [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
 }
 
@@ -461,40 +461,40 @@ function createInplay(contact, power){
 function createSingle(contact, power){
 	let maxLocationx = 50;
     let maxLocationy = 60;
-    let maxValuex = .46;
-    let maxValuey = .46;
-    let minValuex = .15;
-    let minValuey = .1;
+    let maxValuex = .465*Math.sqrt(Math.max(contact*.0275-1,.35))*Math.sqrt(Math.max(power*-.006+1.5,.35));
+    let maxValuey = .465*Math.sqrt(Math.max(contact*.0275-1,.35))*Math.sqrt(Math.max(power*-.006+1.5,.35));
+    let minValuex = .25*Math.sqrt(Math.max(contact*.0275-1,.35))*Math.sqrt(Math.max(power*-.006+1.5,.35));
+    let minValuey = .15*Math.sqrt(Math.max(contact*.0275-1,.35))*Math.sqrt(Math.max(power*-.006+1.5,.35));
     return [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
 }
 
 function createDouble(contact, power){
 	let maxLocationx = 50;
     let maxLocationy = 60;
-    let maxValuex = .26;
-    let maxValuey = .28;
-    let minValuex = .14;
-    let minValuey = .07;
+    let maxValuex = .26*Math.sqrt(Math.max(contact*.0105+.25,.35))*Math.sqrt(Math.max(power*.0105+.25,.35));
+    let maxValuey = .28*Math.sqrt(Math.max(contact*.0105+.25,.35))*Math.sqrt(Math.max(power*.0105+.25,.35));
+    let minValuex = .14*Math.sqrt(Math.max(contact*.0105+.25,.35))*Math.sqrt(Math.max(power*.0105+.25,.35));
+    let minValuey = .07*Math.sqrt(Math.max(contact*.0105+.25,.35))*Math.sqrt(Math.max(power*.0105+.25,.35));
     return [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
 }
 
-function createTriple(contact, power){
+function createTriple(contact, power,speed){
 	let maxLocationx = 50;
     let maxLocationy = 50;
-    let maxValuex = .094;
-    let maxValuey = .094;
-    let minValuex = .027;
-    let minValuey = .008;
+    let maxValuex = .094*Math.sqrt(Math.max(contact*.0105+.25,.35))*Math.sqrt(Math.max(power*.0105+.25,.35))*Math.sqrt(Math.max(speed*.05-3,.35));
+    let maxValuey = .094*Math.sqrt(Math.max(contact*.0105+.25,.35))*Math.sqrt(Math.max(power*.0105+.25,.35))*Math.sqrt(Math.max(speed*.05-3,.35));
+    let minValuex = .027*Math.sqrt(Math.max(contact*.0105+.25,.35))*Math.sqrt(Math.max(power*.0105+.25,.35))*Math.sqrt(Math.max(speed*.05-3,.35));
+    let minValuey = .008*Math.sqrt(Math.max(contact*.0105+.25,.35))*Math.sqrt(Math.max(power*.0105+.25,.35))*Math.sqrt(Math.max(speed*.05-3,.35));
     return [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
 }
 
 function createHr(contact, power){
 	let maxLocationx = 50;
     let maxLocationy = 40;
-    let maxValuex = .27;
-    let maxValuey = .27;
-    let minValuex = -.04;
-    let minValuey = -.1;
+    let maxValuex = .27*Math.sqrt(Math.max(contact*-.011+1.86,.35))*Math.sqrt(Math.max(power*.061-3.9,.35));
+    let maxValuey = .27*Math.sqrt(Math.max(contact*-.011+1.86,.35))*Math.sqrt(Math.max(power*.061-3.9,.35));
+    let minValuex = -.04/Math.sqrt(Math.max(contact*-.011+1.86,.35))/Math.sqrt(Math.max(power*.061-3.9,.35));
+    let minValuey = -.1/Math.sqrt(Math.max(contact*-.011+1.86,.35))/Math.sqrt(Math.max(power*.061-3.9,.35));
     return [maxLocationx,maxLocationy,maxValuex,maxValuey,minValuex,minValuey];
 }
 

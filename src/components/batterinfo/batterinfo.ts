@@ -42,7 +42,7 @@ export class BatterinfoComponent {
 
 
      this.aa = aahold;
-     console.log(this.aa[24]);
+
     console.log('Hello BatterinfoComponent Component');
     
     this.events.subscribe('centralBatter', val => {
@@ -51,12 +51,9 @@ export class BatterinfoComponent {
      storage.ready().then(() => {
        storage.get('gametype').then((gtval) => {
      	storage.get('awayTeam'+gtval).then(teamval => {
-     	console.log(teamval);
      	storage.get(teamval).then(teamobj => {
      	let i =0;
-     	console.log(this.batterid);
      	for (i=0;i<teamobj.batters.length;i++){
-     	console.log(teamobj.batters[i].order);
      	if (teamobj.batters[i].order==this.batterid){
        val = teamobj.batters[i];
        }

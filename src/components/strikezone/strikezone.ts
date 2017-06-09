@@ -18,11 +18,10 @@ export class StrikezoneComponent {
   @ViewChild('strikezoneCanvas') strikezoneCanvas;
 
 
-
   constructor(public events: Events) {
     
 
-
+  this.events.subscribe('pitchinfo', val => {pitchinfo =val;})
   this.events.subscribe('centralSequence', val => {
 
        let i = 0;
@@ -89,6 +88,7 @@ var abh = [];
 var abv = [];
 var abhm = [];
 var abvm = [];
+var pitchinfo = {'velocity':50,'hmove':5,'vmove':5,'rawControl':5,'pitchstring':'NOTHING'};
 
 function stopZone(tx,ty){
 	stopanimate = true;
@@ -135,10 +135,10 @@ function update(leftx,topy,pitchvelocity,maxx,maxy,szsize,last10){
     }
     return [leftx, topy];
 }
+
 function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp,last10){
-	let element = document.getElementById('pitchinfo');
-	let pitchstring = element.innerText || element.textContent;
-    if (pitchstring == 'NOTHING'){
+
+    if (pitchinfo.pitchstring == 'NOTHING'){
         let i = 0;
         for (i=0;i<abh.length;i++){
             if (leftx+abh[i]*szsize/100.>0 && topy+abv[i]*szsize/100.>0){
@@ -163,20 +163,13 @@ function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp
         }
         }
     }
-	if (pitchstring != 'NOTHING'){
+	if (pitchinfo.pitchstring != 'NOTHING'){
 	startanimate = true;
     hdist = 20;
     vdist = 30;
-    let pitchn = parseInt(pitchstring);
-    let rawvelocity = (pitchn*253*169)%1013;
-    vdist = (pitchn*757*101)%1009;
-    hdist = (pitchn*917*849)%1019;
-    if (rawvelocity<-500){rawvelocity=rawvelocity+1013;}
-    if (rawvelocity>500){rawvelocity=rawvelocity-1013;}
-    if (hdist>500){hdist=hdist-1019;}
-    if (vdist>500){vdist=vdist-1009;}
-    if (hdist<-500){hdist=hdist+1019;}
-    if (vdist<-500){vdist=vdist+1009;}
+    let rawvelocity = pitchinfo.rawControl;
+    vdist = pitchinfo.vmove;
+    hdist = pitchinfo.hmove;
     let delta = 0;
     if (timestamp>lastframe){
         delta = Math.min((timestamp-lastframe)/16.,5);
@@ -263,13 +256,12 @@ function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp
     ctx.fillStyle="#000000";
     ctx.strokeStyle="#000000";
 
-    myevent.publish('userTap',[touchx+hdist,touchy+vdist,leftx,topy,szsize,hdist,vdist]);
+    myevent.publish('userTap',[touchx+hdist,touchy+vdist,leftx,topy,szsize,hdist,vdist,pitchinfo.velocity]);
 
 
 	stopanimate = false;
 	startanimate = false;
-    let element = document.getElementById('pitchinfo');
-    element.innerHTML = 'NOTHING';
+    pitchinfo.pitchstring = 'NOTHING';
     requestAnimationFrame(function(timestamp) {drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,false,timestamp,last10)});
     }
     

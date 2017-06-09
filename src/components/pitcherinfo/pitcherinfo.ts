@@ -103,7 +103,7 @@ export class PitcherinfoComponent {
 
        let myelement = document.getElementById('scoreboard');
 	  let physicalScreenW = myelement.getBoundingClientRect().width;
-	  
+
 	  let i = 0;
 
 	  let hdist = [this.hdist1,this.hdist2,this.hdist3,this.hdist4,this.hdist5];
@@ -117,26 +117,43 @@ export class PitcherinfoComponent {
 	  var ctx = c.getContext('2d');
 	  let midpoint = physicalScreenW*.095;
 	  canvas_arrow(ctx,midpoint-hdist[i-1]*multiplier,midpoint-vdist[i-1]*multiplier,midpoint+hdist[i-1]*multiplier,midpoint+vdist[i-1]*multiplier);
+
 	  }
 
      });
   }
 
   throw(pitch) {
-  console.log((100-Math.max(Math.floor((this.pitch1Control-this.Velocity*this.Movement/100.)),0)));
-  if (pitch==1){this.modsum = this.p*this.q*Math.floor(this.hdist1*(this.Movement+100.)/150.)+this.p*this.r*(100-Math.max(Math.floor((this.pitch1Control-this.Velocity*this.Movement/100.)),0))+this.q*this.r*Math.floor(this.vdist1*(this.Movement+100.)/150.);}
-  else if (pitch==2){this.modsum = this.p*this.q*Math.floor(this.hdist2*(this.Movement+100.)/150.)+this.p*this.r*(100-Math.max(Math.floor((this.pitch2Control-this.Velocity*this.Movement/100.)),0))+this.q*this.r*Math.floor(this.vdist2*(this.Movement+100.)/150.);}
-  else if (pitch==3){this.modsum = this.p*this.q*Math.floor(this.hdist3*(this.Movement+100.)/150.)+this.p*this.r*(100-Math.max(Math.floor((this.pitch3Control-this.Velocity*this.Movement/100.)),0))+this.q*this.r*Math.floor(this.vdist3*(this.Movement+100.)/150.);}
-  else if (pitch==4){this.modsum = this.p*this.q*Math.floor(this.hdist4*(this.Movement+100.)/150.)+this.p*this.r*(100-Math.max(Math.floor((this.pitch4Control-this.Velocity*this.Movement/100.)),0))+this.q*this.r*Math.floor(this.vdist4*(this.Movement+100.)/150.);}
-  else if (pitch==5){this.modsum = this.p*this.q*Math.floor(this.hdist5*(this.Movement+100.)/150.)+this.p*this.r*(100-Math.max(Math.floor((this.pitch5Control-this.Velocity*this.Movement/100.)),0))+this.q*this.r*Math.floor(this.vdist5*(this.Movement+100.)/150.);}
-  let element = document.getElementById('pitchinfo');
-  element.innerHTML = this.modsum.toString();
+  if (pitch==1){
+  let pitchinfo = {'hmove':Math.floor(this.hdist1*(this.Movement+100.)/150.),'vmove':Math.floor(this.vdist1*(this.Movement+100.)/150.),'rawControl':(100-Math.max(Math.floor((this.pitch1Control-this.Velocity*this.Movement/100.)),0)),'velocity':Math.floor(this.pitch1Velocity+this.Velocity/10.),'pitchstring':'Some'};
+  this.events.publish('pitchinfo',pitchinfo);
+  }
+	if (pitch==2){
+  let pitchinfo = {'hmove':Math.floor(this.hdist2*(this.Movement+100.)/150.),'vmove':Math.floor(this.vdist2*(this.Movement+100.)/150.),'rawControl':(100-Math.max(Math.floor((this.pitch2Control-this.Velocity*this.Movement/100.)),0)),'velocity':Math.floor(this.pitch2Velocity+this.Velocity/10.),'pitchstring':'Some'};
+  this.events.publish('pitchinfo',pitchinfo);
+  }
+	if (pitch==3){
+  let pitchinfo = {'hmove':Math.floor(this.hdist3*(this.Movement+100.)/150.),'vmove':Math.floor(this.vdist3*(this.Movement+100.)/150.),'rawControl':(100-Math.max(Math.floor((this.pitch3Control-this.Velocity*this.Movement/100.)),0)),'velocity':Math.floor(this.pitch3Velocity+this.Velocity/10.),'pitchstring':'Some'};
+  this.events.publish('pitchinfo',pitchinfo);
+  }
+	if (pitch==4){
+  let pitchinfo = {'hmove':Math.floor(this.hdist4*(this.Movement+100.)/150.),'vmove':Math.floor(this.vdist4*(this.Movement+100.)/150.),'rawControl':(100-Math.max(Math.floor((this.pitch4Control-this.Velocity*this.Movement/100.)),0)),'velocity':Math.floor(this.pitch4Velocity+this.Velocity/10.),'pitchstring':'Some'};
+  this.events.publish('pitchinfo',pitchinfo);
+  }
+	if (pitch==5){
+  let pitchinfo = {'hmove':Math.floor(this.hdist5*(this.Movement+100.)/150.),'vmove':Math.floor(this.vdist5*(this.Movement+100.)/150.),'rawControl':(100-Math.max(Math.floor((this.pitch5Control-this.Velocity*this.Movement/100.)),0)),'velocity':Math.floor(this.pitch5Velocity+this.Velocity/10.),'pitchstring':'Some'};
+  this.events.publish('pitchinfo',pitchinfo);
+  }
+
+
   
   }
 
   ngAfterViewInit(){ 
+
   let myelement = document.getElementById('scoreboard');
   let physicalScreenW = myelement.getBoundingClientRect().width; 
+
   document.getElementById('pitcherInfo').style.height = (physicalScreenW*.67-10).toString().concat('px');
   document.getElementById('velocitySlider').style.width = (physicalScreenW*.33).toString().concat('px');
 	  document.getElementById('movementSlider').style.width = (physicalScreenW*.33).toString().concat('px');
@@ -158,11 +175,13 @@ export class PitcherinfoComponent {
 
   let myelement = document.getElementById('scoreboard');
   let physicalScreenW = myelement.getBoundingClientRect().width;
+  console.log(physicalScreenW);
   let i = 0;
   let hdist = [this.hdist1,this.hdist2,this.hdist3,this.hdist4,this.hdist5];
   let vdist = [this.vdist1,this.vdist2,this.vdist3,this.vdist4,this.vdist5];
 
   for (i=1;i<6;i++){
+
   var c = <HTMLCanvasElement> document.getElementById("pitch".concat(i.toString()));
   c.width= physicalScreenW*.19;
   c.height= physicalScreenW*.19;
