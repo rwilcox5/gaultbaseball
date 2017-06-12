@@ -154,8 +154,9 @@ loadSwing(){
 	this.newGame('save',[[0,0,0,0,0,0,0,0,0],[1,0,0,0,0,0,0,0],[0,1,0],[1,3,0]],[2,0,0,1,[0,1,1]]);
     this.storage.ready().then(() => {
 		this.storage.set('gametype','save');
+		this.navCtrl.push(SavePage);
 		})
-		this.navCtrl.push(SavePage);}
+		}
 
   nobreaks(){
 	this.newGame('nobreaks',[[0,0,0,0,0,0],[1,0,0,0,0],[0,1,0],[1,3,0]],[2,0,0,1,[0,1,1]]);
@@ -202,10 +203,14 @@ loadSwing(){
   	   this.storage.get(awayTeamInit).then(val => {
   	   	   let batters = val.batters
 	  	   let oppLineup = [];
+	  	   let nbatters = 9;
+	  	   if (gtype=='27'){
+	  	   	nbatters = 27;
+	  	   }
 	  	   let i = 0;
-	  	   for (i=1;i<28;i++){
+	  	   for (i=1;i<nbatters+1;i++){
 	  	   let ii =0;
-	  	   for (ii=0;ii<27;ii++){
+	  	   for (ii=0;ii<nbatters;ii++){
 	  	   if (batters[ii]['order']==i){
 	  	   let cPlayer = batters[ii];
 	  	   oppLineup.push({'name':cPlayer.name,'bats':cPlayer.bats,'avg':cPlayer.stats.avg,'obp':cPlayer.stats.obp,'slg':cPlayer.stats.slg,'pa':cPlayer.stats.pa,'hr':cPlayer.stats.hr,'k':cPlayer.stats.k,'bb':cPlayer.stats.bb});
