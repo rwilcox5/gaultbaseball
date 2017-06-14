@@ -8,9 +8,10 @@ import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
 import { GamePage } from '../pages/game/game';
 import { LineupPage } from '../components/lineup/lineup';
+import { BullpenPage } from '../components/bullpen/bullpen';
 import { Bust27Page } from '../pages/bust27/bust27';
 import { NothingPage } from '../pages/nothing/nothing';
-import { SavePage } from '../pages/save/save';
+import { SavethedayPage } from '../pages/savetheday/savetheday';
 import { NobreaksPage } from '../pages/nobreaks/nobreaks';
 import { PracticePage } from '../pages/practice/practice';
 import { TutorialPage } from '../pages/tutorial/tutorial';
@@ -38,9 +39,10 @@ import { CentrallogicComponent } from '../components/centrallogic/centrallogic';
     GamePage,
     ListPage,
     LineupPage,
+    BullpenPage,
     Bust27Page,
     NothingPage,
-    SavePage,
+    SavethedayPage,
     NobreaksPage,
     PracticePage,
     TutorialPage,
@@ -67,10 +69,11 @@ import { CentrallogicComponent } from '../components/centrallogic/centrallogic';
     HomePage,
     GamePage,
     LineupPage,
+    BullpenPage,
     ListPage,
     Bust27Page,
     NothingPage,
-    SavePage,
+    SavethedayPage,
     NobreaksPage,
     PracticePage,
     TutorialPage,

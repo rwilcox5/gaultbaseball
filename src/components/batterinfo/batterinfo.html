@@ -3,10 +3,9 @@
 
 <div>
 <table style="width:100%; margin-top:5px; margin-bottom:5px;">
-<tr><td colspan="4" class='infomenu' style="padding-left:5px; white-space: nowrap; overflow: visible; background-color: white;">At-Bat: {{battername}}</td><td rowspan="8" class="infomenu"><infomenu></infomenu></td></tr>
-<tr><td colspan="4" class='infomenu' style="padding-left:5px; white-space: nowrap; overflow: visible; background-color: white;">Today: {{today}}</td></tr>
-<tr>
-<td style="width:12%;  background-color: white;"></td><td style="width:14%; text-align: center; font-weight: bold; background-color: white;">All</td><td style="width:14%; text-align: center;  font-weight: bold;  background-color: white;">v. R</td><td class="heatmap" rowspan="6" style="padding-left:5px;">
+
+<tr><td colspan="6" class='infomenu' style="padding-left:5px; white-space: nowrap; overflow: visible; background-color: white;">At-Bat: {{battername}}</td>
+<td class="heatmap" rowspan="5" style="padding-left:5px;">
 <table style="width:82%; table-layout: fixed; font-size:.85em; text-align:center;">
 <tr><td style="width:20%; padding-bottom:20%; height: 0;" class="{{aa[0]}}"></td><td class="{{aa[1]}}" style="border-bottom: 2px solid white;"></td><td class="{{aa[2]}}" style="border-bottom: 2px solid white;"></td><td class="{{aa[3]}}" style="border-bottom: 2px solid white;"></td><td class="{{aa[4]}}"></td></tr>
 <tr><td style="width:20%; padding-bottom:20%; height: 0; border-right: 2px solid white;" class="{{aa[5]}}"></td><td class="{{aa[6]}}"></td><td class="{{aa[7]}}"></td><td class="{{aa[8]}}" style="border-right: 2px solid white;"></td><td class="{{aa[9]}}"></td></tr>
@@ -14,22 +13,40 @@
 <tr><td style="width:20%; padding-bottom:20%; height: 0; border-right: 2px solid white;" class="{{aa[15]}}"></td><td class="{{aa[16]}}" style="border-bottom: 2px solid white;"></td><td class="{{aa[17]}}" style="border-bottom: 2px solid white;"></td><td class="{{aa[18]}}" style="border-right: 2px solid white; border-bottom: 2px solid white;"></td><td class="{{aa[19]}}"></td></tr>
 <tr><td style="width:20%; padding-bottom:20%; height: 0;" class="{{aa[20]}}"></td><td class="{{aa[21]}}"></td><td class="{{aa[22]}}"></td><td class="{{aa[23]}}"></td><td class="{{aa[24]}}"></td></tr>
 </table>
-
-
 </td>
+<td rowspan="5" class="infomenu"><infomenu></infomenu></td>
+</tr>
+
+<tr><td colspan="6" class='infomenu' style="padding-left:5px; white-space: nowrap; overflow: visible; background-color: white;">Today: {{today}}</td></tr>
+
+<tr>
+<td style="width:12%;  background-color: white;"></td>
+<td style="text-align:center; background-color: white;"> AVG</td>
+<td style="text-align:center; background-color: white;"> OBP</td>
+<td style="text-align:center; background-color: white;"> SLG</td>
+<td style="text-align:center; background-color: white;"> HR/PA</td>
+<td style="text-align:center; background-color: white;"> K/BB</td>
 
 </tr>
 <tr>
-<td style="text-align:center; background-color: white;"> AVG</td><td style="text-align: right; background-color: white;"> {{avg}}</td><td style="text-align: right; background-color: white;"> {{avgH}}</td>
+<td style="width:14%; text-align: center; font-weight: bold; background-color: white;">All</td>
+<td style="text-align: right; background-color: white;"> {{avg}}</td>
+<td style="text-align: right; background-color: white;"> {{obp}}</td>
+<td style="text-align: right; background-color: white;"> {{slg}}</td>
+<td style="text-align: right; background-color: white;"> {{hr}}/{{pa}}</td>
+<td style="text-align: right; background-color: white;"> {{k}}/{{bb}}</td>
 </tr>
 
-<tr><td style="text-align:center; background-color: white;">
-OBP</td><td style="text-align: right; background-color: white;"> {{obp}}</td><td style="text-align: right; background-color: white;"> {{obpH}}</td></tr>
-<tr><td style="text-align:center; background-color: white;">
-SLG</td><td style="text-align: right; background-color: white;"> {{slg}}</td><td style="text-align: right; background-color: white;"> {{slgH}}</td></tr>
-<tr><td style="text-align:center; background-color: white;">
-HR/PA</td><td style="text-align: right; background-color: white;"> {{hr}}/{{pa}}</td><td style="text-align: right; background-color: white;"> {{hrH}}/{{paH}}</td></tr>
-<tr><td style="text-align:center; background-color: white;">
-K/BB</td><td style="text-align: right; background-color: white;"> {{k}}/{{bb}}</td><td style="text-align: right; background-color: white;"> {{kH}}/{{bbH}}</td></tr>
+<tr>
+<td style="width:14%; text-align: center; font-weight: bold; background-color: white;">v. R</td>
+<td style="text-align: right; background-color: white;"> {{avgH}}</td>
+<td style="text-align: right; background-color: white;"> {{obpH}}</td>
+<td style="text-align: right; background-color: white;"> {{slgH}}</td>
+<td style="text-align: right; background-color: white;"> {{hrH}}/{{paH}}</td>
+<td style="text-align: right; background-color: white;"> {{k}}/{{bbH}}</td>
+</tr>
+
+
+
 </table>
 </div>

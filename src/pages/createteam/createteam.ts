@@ -120,6 +120,8 @@ export class CreateteamPage {
 	if (val.length>0){
 	teamId = 'team'+(parseInt(val[val.length-1].substr(4,))+1).toString();
 	tList = val;
+	tList = [];
+	teamId = 'team0';
 	tList.push(teamId);
 	}
 	}
@@ -226,24 +228,30 @@ export class CreateteamPage {
 
 
 
-function createBatter(batter,init=false){
+export function createBatter(batter,init=false, nameInit='Create'){
 	if (init){
 		let id = batter.id;
 		let contact = 50; let power = 50; let speed = 50; let defense = 50; let batsR = .75;
-		if (id==1){	batter['position'] = 'C';         batsR = .95; contact = 30; power = 40; speed = 20; defense = 60; batter['order'] = 9; batter['name'] = createName();	}
-		else if (id==2){	batter['position'] = '1B'; batsR = .35; contact = 70; power = 80; speed = 40; defense = 50; batter['order'] = 3; batter['name'] = createName();	}
-		else if (id==3){	batter['position'] = '2B'; batsR = .9; contact = 40; power = 40; speed = 70; defense = 60; batter['order'] = 8; batter['name'] = createName();	}
-		else if (id==4){	batter['position'] = 'SS'; batsR = .9; contact = 70; power = 60; speed = 75; defense = 60; batter['order'] = 2; batter['name'] = createName();	}
-		else if (id==5){	batter['position'] = '3B'; batsR = .9; contact = 50; power = 60; speed = 60; defense = 50; batter['order'] = 6; batter['name'] = createName();	}
-		else if (id==6){	batter['position'] = 'LF'; batsR = .5; contact = 60; power = 50; speed = 60; defense = 70; batter['order'] = 7; batter['name'] = createName();    }
-		else if (id==7){	batter['position'] = 'CF'; batsR = .5; contact = 80; power = 60; speed = 80; defense = 60; batter['order'] = 1; batter['name'] = createName();	}
-		else if (id==8){	batter['position'] = 'RF'; batsR = .5; contact = 65; power = 80; speed = 60; defense = 50; batter['order'] = 4; batter['name'] = createName();	}
-		else if (id==9){	batter['position'] = '1B'; batsR = .5; contact = 55; power = 75; speed = 40; defense = 50; batter['order'] = 5; batter['name'] = createName();	}
-		else if (id==10){	batter['position'] = 'SS'; batsR = .9; contact = 50; power = 50; speed = 70; defense = 70; batter['order'] = 10; batter['name'] = createName();	}
-		else if (id==11){	batter['position'] = 'CF'; batsR = .5; contact = 60; power = 60; speed = 70; defense = 80; batter['order'] = 10; batter['name'] = createName();	}
-		else if (id==12){	batter['position'] = '3B'; batsR = .85; contact = 40; power = 50; speed = 50; defense = 50; batter['order'] = 10; batter['name'] = createName();	}
-		else if (id==13){	batter['position'] = 'C'; batsR = .95; contact = 30; power = 30; speed = 30; defense = 70; batter['order'] = 10; batter['name'] = createName();	}
-		else if (id==14){	batter['position'] = 'RF'; batsR = .5; contact = 40; power = 70; speed = 80; defense = 50; batter['order'] = 10; batter['name'] = createName();	}
+		if (id==1){	batter['position'] = 'C';         batsR = .95; contact = 80; power = 80; speed = 20; defense = 60; batter['order'] = 9; 	}
+		else if (id==2){	batter['position'] = '1B'; batsR = .35; contact = 80; power = 80; speed = 40; defense = 50; batter['order'] = 3; 	}
+		else if (id==3){	batter['position'] = '2B'; batsR = .9; contact = 80; power = 80; speed = 70; defense = 60; batter['order'] = 8; 	}
+		else if (id==4){	batter['position'] = 'SS'; batsR = .9; contact = 80; power = 80; speed = 75; defense = 60; batter['order'] = 2; 	}
+		else if (id==5){	batter['position'] = '3B'; batsR = .9; contact = 80; power = 80; speed = 60; defense = 50; batter['order'] = 6; 	}
+		else if (id==6){	batter['position'] = 'LF'; batsR = .5; contact = 80; power = 80; speed = 60; defense = 70; batter['order'] = 7;     }
+		else if (id==7){	batter['position'] = 'CF'; batsR = .5; contact = 80; power = 80; speed = 80; defense = 60; batter['order'] = 1; 	}
+		else if (id==8){	batter['position'] = 'RF'; batsR = .5; contact = 85; power = 80; speed = 60; defense = 50; batter['order'] = 4; 	}
+		else if (id==9){	batter['position'] = '1B'; batsR = .5; contact = 85; power = 85; speed = 40; defense = 50; batter['order'] = 5; 	}
+		else if (id==10){	batter['position'] = 'SS'; batsR = .9; contact = 50; power = 50; speed = 70; defense = 70; batter['order'] = 10; 	}
+		else if (id==11){	batter['position'] = 'CF'; batsR = .5; contact = 60; power = 60; speed = 70; defense = 80; batter['order'] = 10; 	}
+		else if (id==12){	batter['position'] = '3B'; batsR = .85; contact = 40; power = 50; speed = 50; defense = 50; batter['order'] = 10; 	}
+		else if (id==13){	batter['position'] = 'C'; batsR = .95; contact = 30; power = 30; speed = 30; defense = 70; batter['order'] = 10; 	}
+		else if (id==14){	batter['position'] = 'RF'; batsR = .5; contact = 40; power = 70; speed = 80; defense = 50; batter['order'] = 10; 	}
+		if (nameInit == 'Create'){
+		batter['name'] = createName();
+		}
+		else {
+		batter['name'] = nameInit;
+		}
 
 		if (Math.random()<batsR){batter['bats']='R';}
 		else{		batter['bats']='L';		}
@@ -399,6 +407,9 @@ function createPitcher(pitcher,init=false){
 	pitch3 = {'name':pitcher.pitch[2].name,'id':pitcher.pitch[2].id,'velocity':pitcher.pitch[2].velocity,'movement':[pitcher.pitch[2].movement[0],pitcher.pitch[2].movement[1]],'control':pitcher.pitch[2].control};
 	pitch4 = {'name':pitcher.pitch[3].name,'id':pitcher.pitch[3].id,'velocity':pitcher.pitch[3].velocity,'movement':[pitcher.pitch[3].movement[0],pitcher.pitch[3].movement[1]],'control':pitcher.pitch[3].control};
 	pitch5 = {'name':pitcher.pitch[4].name,'id':pitcher.pitch[4].id,'velocity':pitcher.pitch[4].velocity,'movement':[pitcher.pitch[4].movement[0],pitcher.pitch[4].movement[1]],'control':pitcher.pitch[4].control};
+	let statshold = {'era':3.14,'avg':.321,'obp':.417,'slg':.554,'ip':81.2,'hr':7,'k':71,'bb':23};
+	let statsRhold = {'era':4.25,'avg':.321,'obp':.417,'slg':.554,'ip':81.2,'hr':7,'k':71,'bb':23};
+	let statsLhold = {'era':2.70,'avg':.321,'obp':.417,'slg':.554,'ip':81.2,'hr':7,'k':71,'b':23};
 	let i = 0;
 	let numPitches =0;
 	for (i=0;i<5;i++){
@@ -409,7 +420,7 @@ function createPitcher(pitcher,init=false){
 
 	
 
-	return {'id':id,'name':pname,'numPitches':numPitches,'throws':throws,'position':position,'velocity':velocity,'control':control,'movement':movement,'stamina':stamina,'pitch1':pitch1,'pitch2':pitch2,'pitch3':pitch3,'pitch4':pitch4,'pitch5':pitch5,'pitch':[pitch1,pitch2,pitch3,pitch4,pitch5],'velocityold':velocity,'controlold':control,'movementold':movement};
+	return {'id':id,'name':pname,'numPitches':numPitches,'throws':throws,'position':position,'velocity':velocity,'control':control,'movement':movement,'stamina':stamina,'pitch1':pitch1,'pitch2':pitch2,'pitch3':pitch3,'pitch4':pitch4,'pitch5':pitch5,'pitch':[pitch1,pitch2,pitch3,pitch4,pitch5],'velocityold':velocity,'controlold':control,'movementold':movement,'stats':statshold,'statsR':statsRhold,'statsL':statsLhold};
 }
 
 function createName(){

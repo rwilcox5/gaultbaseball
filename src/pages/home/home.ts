@@ -4,12 +4,12 @@ import { Storage } from '@ionic/storage';
 import { GamePage } from '../game/game';
 import { Bust27Page } from '../bust27/bust27';
 import { NothingPage } from '../nothing/nothing';
-import { SavePage } from '../save/save';
+import { SavethedayPage } from '../savetheday/savetheday';
 import { NobreaksPage } from '../nobreaks/nobreaks';
 import { CreateteamPage } from '../createteam/createteam';
 import { EditteamPage } from '../editteam/editteam';
 import { ViewteamPage } from '../viewteam/viewteam';
-import { CreategamePage } from '../creategame/creategame';
+import { CreategamePage, newGame } from '../creategame/creategame';
 
 @Component({
   selector: 'page-home',
@@ -136,7 +136,7 @@ loadSwing(){
 		})
 		})
   	
-  	this.newGame('27',[[0],[],[0,0,0],[0,0,0]],[0,0,0,0,[0,0,0]],15,'team27bust1');
+  	this.newGameOld('27',[[0],[],[0,0,0],[0,0,0]],[0,0,0,0,[0,0,0]],15,'team27bust1');
 	this.storage.ready().then(() => {
 		this.storage.set('gametype','27');
 		})
@@ -144,22 +144,19 @@ loadSwing(){
   	this.navCtrl.push(Bust27Page);}
 
   nothing(){
-  this.newGame('nothing');
+  this.newGameOld('nothing');
   	this.storage.ready().then(() => {
 		this.storage.set('gametype','nothing');
 		})
 		this.navCtrl.push(NothingPage);}
 
   save(){
-	this.newGame('save',[[0,0,0,0,0,0,0,0,0],[1,0,0,0,0,0,0,0],[0,1,0],[1,3,0]],[2,0,0,1,[0,1,1]]);
-    this.storage.ready().then(() => {
-		this.storage.set('gametype','save');
-		this.navCtrl.push(SavePage);
-		})
+
+	this.navCtrl.push(SavethedayPage);
 		}
 
   nobreaks(){
-	this.newGame('nobreaks',[[0,0,0,0,0,0],[1,0,0,0,0],[0,1,0],[1,3,0]],[2,0,0,1,[0,1,1]]);
+	this.newGameOld('nobreaks',[[0,0,0,0,0,0],[1,0,0,0,0],[0,1,0],[1,3,0]],[2,0,0,1,[0,1,1]]);
     this.storage.ready().then(() => {
 		this.storage.set('gametype','nobreaks');
 		})
@@ -183,7 +180,7 @@ loadSwing(){
 		})
 	}
 
-  newGame(gtype,linescoreInit=[[0],[],[0,0,0],[0,0,0]],situationInit=[0,0,0,0,[0,0,0]],pitcherInit=15,awayTeamInit='team0',homeTeamInit='team0'){
+  newGameOld(gtype,linescoreInit=[[0],[],[0,0,0],[0,0,0]],situationInit=[0,0,0,0,[0,0,0]],pitcherInit=15,awayTeamInit='team0',homeTeamInit='team0'){
   if (gtype==''){
      this.navCtrl.push(CreategamePage);
      }

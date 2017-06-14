@@ -10,29 +10,34 @@
 		<tr><td>
 		<situation></situation>
 		</td></tr>
+
 		<tr><td>
 		<div id="lastpitch"></div>
 		</td></tr>
+
 		<tr><td>
 		<div id="lastresult"></div>
+		</td></tr>
+
 		<tr><td>
-		<ion-list>
+		
 		  <ion-item no-lines>
-		    <ion-range min="20" max="80" [(ngModel)]="Velocity" color="secondary" (ionChange)="updateSlider()" style="width:10px;" id="velocitySlider">
-		    <ion-icon small range-left>V</ion-icon>
+		    <ion-range min="20" max="80" [(ngModel)]="Velocity" color="secondary" (ionChange)="updateSlider()" style="max-width:100%;">
+
 		    </ion-range>
 		  </ion-item>
+		</td></tr>
+		<tr><td>
 
 		  <ion-item no-lines>
-		    <ion-range min="20" max="80" [(ngModel)]="Movement" color="secondary" (ionChange)="updateSlider()" style="width:10px;" id="movementSlider">
-		    <ion-icon small range-left>M</ion-icon>
+		    <ion-range min="20" max="80" [(ngModel)]="Movement" color="secondary" (ionChange)="updateSlider()" style="max-width:100%;">
 		    </ion-range>
 		  </ion-item>
 
 		 
-		</ion-list>
+		
 		</td></tr>
-
+		<tr><td>
 		Stamina: 90
 		</td>
 		</tr>
@@ -66,11 +71,11 @@
 		<td id="pitch5c">{{p5Control}}</td>
 		</tr>
 		<tr>
-		<td><canvas height="80" width="80" style="border:1px solid #d3d3d3;" id="pitch1"></canvas></td>
-		<td><canvas height="80" width="80" style="border:1px solid #d3d3d3;" id="pitch2"></canvas></td>
-		<td><canvas height="80" width="80" style="border:1px solid #d3d3d3;" id="pitch3"></canvas></td>
-		<td><canvas height="80" width="80" style="border:1px solid #d3d3d3;" id="pitch4"></canvas></td>
-		<td><canvas height="80" width="80" style="border:1px solid #d3d3d3;" id="pitch5"></canvas></td>
+		<td><canvas height="80" width="80" style="border:1px solid #d3d3d3;" #pitch1></canvas></td>
+		<td><canvas height="80" width="80" style="border:1px solid #d3d3d3;" #pitch2></canvas></td>
+		<td><canvas height="80" width="80" style="border:1px solid #d3d3d3;" #pitch3></canvas></td>
+		<td><canvas height="80" width="80" style="border:1px solid #d3d3d3;" #pitch4></canvas></td>
+		<td><canvas height="80" width="80" style="border:1px solid #d3d3d3;" #pitch5></canvas></td>
 		</tr>
 		</table>
 	

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';
 
@@ -13,6 +13,7 @@ import { Events } from 'ionic-angular';
   templateUrl: 'situation.html'
 })
 export class SituationComponent {
+	@ViewChild('basesCanvas') basesCanvas;
 
   count: string;
   balls:number = 0;
@@ -32,7 +33,7 @@ export class SituationComponent {
 	   this.outsn=val[2];
 	   this.count = this.balls.toString().concat('-').concat(this.strikes.toString());
 	   this.outs = this.outsn.toString().concat(' Outs');
-	   var c = <HTMLCanvasElement> document.getElementById("bases");
+	   var c = this.basesCanvas.nativeElement;
 	   let i = 0;
 	   for (i=1;i<4;i++){if (val[4][3-i]==1) {drawBase(c,i,'red',c.width);} else {drawBase(c,i,'white',c.width);}}
 
@@ -49,16 +50,15 @@ export class SituationComponent {
     this.outsn=call[2];
     this.count = this.balls.toString().concat('-').concat(this.strikes.toString());
     this.outs = this.outsn.toString().concat(' Outs');
-    var c = <HTMLCanvasElement> document.getElementById("bases");
+    var c = this.basesCanvas.nativeElement;
 	let i = 0;
 	for (i=1;i<4;i++){if (call[4][3-i]==1) {drawBase(c,i,'red',c.width);} else {drawBase(c,i,'white',c.width);}}
 
     });
   }
   ngAfterViewInit(){  
-  let myelement = document.getElementById('scoreboard');
-  let physicalScreenW = myelement.getBoundingClientRect().width;
-  var c = <HTMLCanvasElement> document.getElementById("bases");
+  let physicalScreenW = window.innerWidth;
+  var c = this.basesCanvas.nativeElement;
   c.width= physicalScreenW*.15;
   c.height= physicalScreenW*.1;
   drawBase(c,1,'white',c.width);

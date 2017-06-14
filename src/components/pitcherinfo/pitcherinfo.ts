@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Events } from 'ionic-angular';
 
 /**
@@ -12,6 +12,14 @@ import { Events } from 'ionic-angular';
   templateUrl: 'pitcherinfo.html'
 })
 export class PitcherinfoComponent {
+	@ViewChild('pitch1') pitch1;
+	@ViewChild('pitch2') pitch2;
+	@ViewChild('pitch3') pitch3;
+	@ViewChild('pitch4') pitch4;
+	@ViewChild('pitch5') pitch5;
+	@ViewChild('velocitySlider') velocitySlider;
+	@ViewChild('movementSlider') movementSlider;
+
 
   private Velocity = 50;
   private Movement = 50;
@@ -60,6 +68,7 @@ export class PitcherinfoComponent {
 
        this.events.subscribe('centralPitcher', val => {
 
+
        let numPitches = val.numPitches;
        if (numPitches<2){ document.getElementById('pitch2').className += 'hiddenPitch'; document.getElementById('pitch2n').className += 'hiddenPitch'; document.getElementById('pitch2v').className += 'hiddenPitch'; document.getElementById('pitch2c').className += 'hiddenPitch';}
        if (numPitches<3){ document.getElementById('pitch3').className += 'hiddenPitch'; document.getElementById('pitch3n').className += 'hiddenPitch'; document.getElementById('pitch3v').className += 'hiddenPitch'; document.getElementById('pitch3c').className += 'hiddenPitch';}
@@ -101,22 +110,22 @@ export class PitcherinfoComponent {
        this.p4Control = Math.max(Math.floor((this.pitch4Control-this.Velocity*this.Movement/100.)),0).toString()+' Con';
        this.p5Control = Math.max(Math.floor((this.pitch5Control-this.Velocity*this.Movement/100.)),0).toString()+' Con';
 
-       let myelement = document.getElementById('scoreboard');
-	  let physicalScreenW = myelement.getBoundingClientRect().width;
+	  let physicalScreenW = window.innerWidth;
 
 	  let i = 0;
 
 	  let hdist = [this.hdist1,this.hdist2,this.hdist3,this.hdist4,this.hdist5];
 	  let vdist = [this.vdist1,this.vdist2,this.vdist3,this.vdist4,this.vdist5];
 
+	  
+	  let allcanvas = [this.pitch1.nativeElement,this.pitch2.nativeElement,this.pitch3.nativeElement,this.pitch4.nativeElement,this.pitch5.nativeElement];
 	  for (i=1;i<6;i++){
-	  var c = <HTMLCanvasElement> document.getElementById("pitch".concat(i.toString()));
-	  c.width= physicalScreenW*.19;
-	  c.height= physicalScreenW*.19;
+	  let canvas = allcanvas[i-1];
+	  canvas.width= physicalScreenW*.19;
+	  canvas.height= physicalScreenW*.19;
 	  let multiplier = 1.25/600.*(physicalScreenW*.67-10)*(this.Movement+100.)/150.;
-	  var ctx = c.getContext('2d');
 	  let midpoint = physicalScreenW*.095;
-	  canvas_arrow(ctx,midpoint-hdist[i-1]*multiplier,midpoint-vdist[i-1]*multiplier,midpoint+hdist[i-1]*multiplier,midpoint+vdist[i-1]*multiplier);
+	  canvas_arrow(canvas.getContext('2d'),midpoint-hdist[i-1]*multiplier,midpoint-vdist[i-1]*multiplier,midpoint+hdist[i-1]*multiplier,midpoint+vdist[i-1]*multiplier);
 
 	  }
 
@@ -151,12 +160,10 @@ export class PitcherinfoComponent {
 
   ngAfterViewInit(){ 
 
-  let myelement = document.getElementById('scoreboard');
-  let physicalScreenW = myelement.getBoundingClientRect().width; 
+  let physicalScreenW = window.innerWidth; 
 
-  document.getElementById('pitcherInfo').style.height = (physicalScreenW*.67-10).toString().concat('px');
-  document.getElementById('velocitySlider').style.width = (physicalScreenW*.33).toString().concat('px');
-	  document.getElementById('movementSlider').style.width = (physicalScreenW*.33).toString().concat('px');
+
+ 
   }
 
   updateSlider(){
@@ -173,22 +180,20 @@ export class PitcherinfoComponent {
        this.p5Control = Math.max(Math.floor((this.pitch5Control-this.Velocity*this.Movement/100.)),0).toString()+' Con';
 
 
-  let myelement = document.getElementById('scoreboard');
-  let physicalScreenW = myelement.getBoundingClientRect().width;
-  console.log(physicalScreenW);
+  let physicalScreenW = window.innerWidth;
   let i = 0;
   let hdist = [this.hdist1,this.hdist2,this.hdist3,this.hdist4,this.hdist5];
   let vdist = [this.vdist1,this.vdist2,this.vdist3,this.vdist4,this.vdist5];
 
+  let allcanvas = [this.pitch1.nativeElement,this.pitch2.nativeElement,this.pitch3.nativeElement,this.pitch4.nativeElement,this.pitch5.nativeElement];
   for (i=1;i<6;i++){
-
-  var c = <HTMLCanvasElement> document.getElementById("pitch".concat(i.toString()));
-  c.width= physicalScreenW*.19;
-  c.height= physicalScreenW*.19;
+  let canvas = allcanvas[i-1];
+  canvas.width= physicalScreenW*.19;
+  canvas.height= physicalScreenW*.19;
   let multiplier = 1.25/600.*(physicalScreenW*.67-10)*(this.Movement+100.)/150.;
-  var ctx = c.getContext('2d');
   let midpoint = physicalScreenW*.095;
-  canvas_arrow(ctx,midpoint-hdist[i-1]*multiplier,midpoint-vdist[i-1]*multiplier,midpoint+hdist[i-1]*multiplier,midpoint+vdist[i-1]*multiplier);
+  canvas_arrow(canvas.getContext('2d'),midpoint-hdist[i-1]*multiplier,midpoint-vdist[i-1]*multiplier,midpoint+hdist[i-1]*multiplier,midpoint+vdist[i-1]*multiplier);
+
   }
 
 
@@ -201,6 +206,8 @@ export class PitcherinfoComponent {
 }
 
 function canvas_arrow(context, fromx, fromy, tox, toy){
+	console.log("fromx=");
+	console.log(fromx);
     var headlen = 10;   // length of head in pixels
     var angle = Math.atan2(toy-fromy,tox-fromx);
     context.moveTo(fromx, fromy);

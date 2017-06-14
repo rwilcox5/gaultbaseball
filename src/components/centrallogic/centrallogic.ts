@@ -19,18 +19,25 @@ export class CentrallogicComponent {
 
 
   constructor(public storage: Storage, public events: Events) {
+
   this.storage.ready().then(() => {
+console.log('con got stored0');
        this.storage.get('gametype').then((gtval) => {
-
+       console.log('con got stored5');
+       })
+       this.storage.get('gametype').then((gtval) => {
     let ccc = gtval;
+    console.log('con got stored1');
 
-  this.storage.ready().then(() => {
   this.storage.get('currentSequence'+ccc).then((val) => {
+  console.log('con got stored2');
   this.storage.get('linescore'+ccc).then((linescore) => {
   this.storage.get('situation'+ccc).then((situation) => {
+  console.log('con got stored3');
   this.storage.get('currentPitcher'+ccc).then(currentPitcher => {
   this.storage.get('awayTeam'+ccc).then(ateamval => {
   this.storage.get('homeTeam'+ccc).then(hteamval => {
+  console.log('con got stored4');
   	let pitcher = {};
      	storage.get(hteamval).then(teamobj => {
      	let i =0;
@@ -40,12 +47,13 @@ export class CentrallogicComponent {
        console.log(teamobj.pitchers[i].pitch1.movement);
        }
        }
+
     this.events.publish('centralSequence', val);
     this.events.publish('centralTap', situation); 
     this.events.publish('centralScore', linescore);
     this.events.publish('centralBatter',situation[3]%9+1);
     this.events.publish('centralPitcher',pitcher);
-  })
+    console.log('pub events');
   })
   })
   })
@@ -54,8 +62,6 @@ export class CentrallogicComponent {
   })
   })
   
-
-
     this.events.subscribe('userTap', pitch => {
     this.storage.ready().then(() => {
        
@@ -86,10 +92,11 @@ export class CentrallogicComponent {
 	       	       csequence.push([Math.floor((pitch[0]-pitch[2])*100./pitch[4]),Math.floor((pitch[1]-pitch[3])*100./pitch[4]),pitch[5],pitch[6]]);
 			       this.storage.set('currentSequence'+ccc,csequence); currentSequence = csequence;
 
-			       let theresult = determinePlay(this.events,pitch,batter,situation,linescore,ccc,[situation[0],situation[1]],csequence);
+			       let theresult = determinePlay(this.events,pitch,batter,situation,linescore,ccc,[situation[0],situation[1]],csequence,storage);
 
 			       this.storage.set('situation'+ccc,theresult[0]);
 			       this.storage.set('linescore'+ccc,theresult[1]);
+			       if (ccc=='save'){getSave(linescore,this.storage);}
 			       if (situation[0]==0 && situation[1]==0){
 			       		this.storage.set('currentSequence'+ccc, []); currentSequence = [];
 			       }
@@ -108,10 +115,11 @@ export class CentrallogicComponent {
   }
   ngAfterViewInit(){ 
   }
+  gameOver(whereTo){this.events.publish('gameOver',whereTo);}
 
 }
 
-function determinePlay(myevent,pitch,batter,situation,linescore,gtype,count,csequence){
+function determinePlay(myevent,pitch,batter,situation,linescore,gtype,count,csequence,storage){
 	let situationhold = situation;
 	document.getElementById('lastpitch').innerHTML = '';
 	document.getElementById('lastresult').innerHTML = '';
@@ -145,8 +153,10 @@ function determinePlay(myevent,pitch,batter,situation,linescore,gtype,count,cseq
 	            }
 	            if (homeruns>awayruns){
 	            	console.log('Game Over. You Win.');
+	            	getSave(linescore,storage,'Save');
 	            }
 	            else{
+	            if (homeruns==awayruns) {getSave(linescore,storage,'Tie');}
 	            linescore[1].push(Math.floor(Math.random()*2));
 	            if (awayruns>homeruns+linescore[1][linescore[1].length-1]){
 	            console.log('Game Over. You Lose.');
@@ -161,15 +171,15 @@ function determinePlay(myevent,pitch,batter,situation,linescore,gtype,count,cseq
 	            }
 	            }
             } else {situation[2]++;}}
-            else { linescore = linescoreChange(isPlay,situationhold,linescore); situation = situationChange(isPlay, situation);}
+            else { linescore = linescoreChange(isPlay,situationhold,linescore,gtype); situation = situationChange(isPlay, situation);}
             situation[3]++;
             }
         }
         else if (isContact=='Foul'){document.getElementById('lastpitch').innerHTML = 'Foul Ball'; if (situation[1]<2) {situation[1]++;}}
-        else {let theresult= noContact('Strike',situation,linescore,myevent,gtype); situation= theresult[0]; linescore = theresult[1];}
+        else {let theresult= noContact('Strike',situation,linescore,myevent,gtype,storage); situation= theresult[0]; linescore = theresult[1];}
     }
     else{
-    	let theresult= noContact(isStrike,situation,linescore,myevent,gtype); situation= theresult[0];
+    	let theresult= noContact(isStrike,situation,linescore,myevent,gtype,storage); situation= theresult[0];
     	linescore = theresult[1];
     	
     	
@@ -290,14 +300,14 @@ function makeSwing(tx,ty,swingMap,count){
     return thePlay;
  }
 
- function noContact(isStrike, situation, linescore,myevent,gtype){
+ function noContact(isStrike, situation, linescore,myevent,gtype,storage){
 	if (situation[0]==3 && isStrike=='Ball'){
 		situation[0]=0;
 		situation[1]=0;
 		if (situation[4][2]==0){situation[4][2]=1;}
 		else if (situation[4][1]==0){situation[4][1]=1;}
 		else if (situation[4][0]==0){situation[4][0]=1;}
-		else {linescore[0][linescore[0].length-1]++; document.getElementById('lastresult').innerHTML = '1 Run Scores';}
+		else {linescore = linescoreChange('Walk',situation,linescore,gtype);}
 		document.getElementById('lastpitch').innerHTML = 'Walk';
 		if (gtype=='27'){myevent.publish('central27','loss');}
 		situation[3]++;
@@ -320,8 +330,10 @@ function makeSwing(tx,ty,swingMap,count){
 	            }
 	            if (homeruns>awayruns){
 	            	console.log('Game Over. You Win.');
+	            	getSave(linescore,storage,'Save');
 	            }
 	            else{
+	            if (homeruns==awayruns) {getSave(linescore,storage,'Tie');}
 	            linescore[1].push(Math.floor(Math.random()*2));
 	            if (awayruns>homeruns+linescore[1][linescore[1].length-1]){
 	            console.log('Game Over. You Lose.');
@@ -381,7 +393,7 @@ function makeSwing(tx,ty,swingMap,count){
 
  }
 
- function linescoreChange(isPlay, situation, linescore){
+ function linescoreChange(isPlay, situation, linescore,gtype){
  	if (isPlay=='Single'){
  		linescore[2][1]++;
 		if (situation[4][0]==1){linescore[0][linescore[0].length-1]++; document.getElementById('lastresult').innerHTML = '1 Run Scores';}
@@ -403,7 +415,7 @@ function makeSwing(tx,ty,swingMap,count){
 		if (situation[4][0]+situation[4][1]+situation[4][2]>1){document.getElementById('lastresult').innerHTML = (situation[4][0]+situation[4][1]+situation[4][2]).toString().concat(' Runs Score');}
 		else if (situation[4][0]+situation[4][1]+situation[4][2]==1){document.getElementById('lastresult').innerHTML = '1 Run Scores';}
 	}
-	else {
+	else if (isPlay=='Home Run'){
 	linescore[2][1]++;
 	if (situation[4][0]==1){linescore[0][linescore[0].length-1]++;}
 	if (situation[4][1]==1){linescore[0][linescore[0].length-1]++;}
@@ -412,7 +424,9 @@ function makeSwing(tx,ty,swingMap,count){
 	if (situation[4][0]+situation[4][1]+situation[4][2]>0){document.getElementById('lastresult').innerHTML = (1+situation[4][0]+situation[4][1]+situation[4][2]).toString().concat(' Runs Score');}
 		else {document.getElementById('lastresult').innerHTML = '1 Run Scores';}
 	}
-
+	else{
+	 linescore[0][linescore[0].length-1]++; document.getElementById('lastresult').innerHTML = '1 Run Scores';
+	}
 	
 	return linescore;
 
@@ -446,4 +460,52 @@ function movePitch(csequence){
 function adjContact(play,velocity,movement){
 	if (play=='Contact'){return 1;}
 	if (play=='Fair'){return 1;}
+}
+
+function getSave(linescore,storage,outcome='No'){
+	if (linescore[2][0]>linescore[3][0]){
+		console.log('Blown Save to Record');
+		document.getElementById('goback').style.display = 'block';
+
+
+	}
+	else if (outcome=='Save'){
+		console.log('Save');
+		storage.ready().then(() => {
+		storage.get('saveId').then(val => {
+		storage.get('save').then(saveval => {
+		console.log(saveval);
+		let saveArr = [['false','false','false','false'],['false','false','false','false'],['false','false','false','false']];
+		if (saveval != null){
+		saveArr = saveval;
+		}
+		saveArr[val][0]='true';
+		saveArr[val][1]='true';
+		saveArr[val][2]='true';
+		saveArr[val][3]='true';
+		storage.set('save',saveArr);
+		})
+		})
+		
+		})
+		document.getElementById('goback').style.display = 'block';
+	}
+	else if (outcome=='Tie'){
+		console.log('Save');
+		storage.ready().then(() => {
+		storage.get('saveId').then(val => {
+		storage.get('save').then(saveval => {
+		let saveArr = [['false','false','false','false'],['false','false','false','false'],['false','false','false','false']];
+		if (saveval != null){
+		saveArr = saveval;
+		}
+		saveArr[val][0]='true';
+		storage.set('save',saveArr);
+		})
+		})
+		
+		})
+		document.getElementById('goback').style.display = 'block';
+	}
+
 }

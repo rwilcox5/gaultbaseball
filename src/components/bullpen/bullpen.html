@@ -1,0 +1,27 @@
+<!--
+  Generated template for the BullpenPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Bullpen</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+
+<ion-content padding>
+<table>
+<tr style="text-decoration: bold;"><td>Name</td><td>Thr</td><td>ERA</td><td>AVG</td><td>OBP</td><td>SLG</td><td>IP</td><td>HR</td><td>K</td><td>BB</td></tr>
+<tr *ngFor="let i of batterids" class="{{row[i]}}"><td>{{names[i]}}</td><td>{{throws[i]}}</td><td>{{eras[i]}}</td><td>{{avgs[i]}}</td><td>{{obps[i]}}</td><td>{{slgs[i]}}</td><td>{{ips[i]}}</td><td>{{hrs[i]}}</td><td>{{ks[i]}}</td><td>{{bbs[i]}}</td></tr>
+
+</table>
+<button ion-button (click)="getAll()">All</button>
+<button ion-button (click)="getR()">vs. R</button>
+<button ion-button (click)="getL()">vs. L</button>
+<button ion-button block (click)="closeModal()">Close</button>
+</ion-content>

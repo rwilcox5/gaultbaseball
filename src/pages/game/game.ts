@@ -1,5 +1,11 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
+import { Events } from 'ionic-angular';
+import { HomePage } from '../home/home';
+import { Bust27Page } from '../bust27/bust27';
+import { NothingPage } from '../nothing/nothing';
+import { SavethedayPage } from '../savetheday/savetheday';
+import { Storage } from '@ionic/storage';
 
 /**
  * Generated class for the GamePage page.
@@ -15,8 +21,17 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 
 export class GamePage {
+  storage: Storage;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public viewCtrl: ViewController, public navParams: NavParams, public events: Events, storage: Storage) {
+  this.events.subscribe('gameOver', gameVal => {
+  if (gameVal == ''){    
+  this.navCtrl.push(HomePage);
+  }
+  if (gameVal == 'save'){    
+  this.navCtrl.push(SavethedayPage);
+  }
+  })
 
   }
 
@@ -24,6 +39,8 @@ export class GamePage {
     console.log('ionViewDidLoad GamePage');
 
   }
+
+  ionViewWillLeave(){this.events.publish('leaving','game'); console.log('leaving strikezone');}
 
 }
 

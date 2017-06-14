@@ -19,9 +19,26 @@ export class StrikezoneComponent {
 
 
   constructor(public events: Events) {
+  this.events.subscribe('leaving', val => {
+  this.events.unsubscribe('pitchinfo');
+  this.events.unsubscribe('centralSequence');
+  console.log('leaving szone'+val);
+  })
     
 
-  this.events.subscribe('pitchinfo', val => {pitchinfo =val;})
+  this.events.subscribe('pitchinfo', val => {pitchinfo =val;
+    startanimate = true;
+    let canvas = this.strikezoneCanvas.nativeElement;
+
+
+        let physicalScreenW = window.innerWidth;
+        console.log('psw='+physicalScreenW.toString());
+        this.strikezoneCanvas.nativeElement.width = physicalScreenW*.67-10;
+        this.strikezoneCanvas.nativeElement.height = physicalScreenW*.67-10;
+        let szsize = 100./300.*(physicalScreenW*.67-10);
+        let last10 = [[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0]]
+        drawZone(this.strikezoneCanvas.nativeElement.getContext('2d'),szsize,(physicalScreenW*.67-10)/2.-szsize/2.,(physicalScreenW*.67-10)/2.-szsize/2.,this.strikezoneCanvas.nativeElement.width,this.strikezoneCanvas.nativeElement.height,true,0,last10);
+  })
   this.events.subscribe('centralSequence', val => {
 
        let i = 0;
@@ -37,6 +54,7 @@ export class StrikezoneComponent {
        }
 
   })
+
   }
 
   afterCanvasTap(event){
@@ -54,8 +72,8 @@ export class StrikezoneComponent {
         let canvas = this.strikezoneCanvas.nativeElement;
 
 
-        let myelement = document.getElementById('scoreboard');
-        let physicalScreenW = myelement.getBoundingClientRect().width;
+        let physicalScreenW = window.innerWidth;
+        console.log('psw='+physicalScreenW.toString());
         this.strikezoneCanvas.nativeElement.width = physicalScreenW*.67-10;
         this.strikezoneCanvas.nativeElement.height = physicalScreenW*.67-10;
         let szsize = 100./300.*(physicalScreenW*.67-10);
@@ -89,6 +107,7 @@ var abv = [];
 var abhm = [];
 var abvm = [];
 var pitchinfo = {'velocity':50,'hmove':5,'vmove':5,'rawControl':5,'pitchstring':'NOTHING'};
+var requestId;
 
 function stopZone(tx,ty){
 	stopanimate = true;
@@ -139,6 +158,7 @@ function update(leftx,topy,pitchvelocity,maxx,maxy,szsize,last10){
 function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp,last10){
 
     if (pitchinfo.pitchstring == 'NOTHING'){
+    console.log('NTHING');
         let i = 0;
         for (i=0;i<abh.length;i++){
             if (leftx+abh[i]*szsize/100.>0 && topy+abv[i]*szsize/100.>0){
@@ -164,6 +184,7 @@ function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp
         }
     }
 	if (pitchinfo.pitchstring != 'NOTHING'){
+    console.log('Not NTHING');
 	startanimate = true;
     hdist = 20;
     vdist = 30;
@@ -228,9 +249,10 @@ function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp
     last10[1].push(0);
     }
     }
+    requestId = requestAnimationFrame(function(timestamp) {drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,startanimate,timestamp,last10)});
     }
 
-    requestAnimationFrame(function(timestamp) {drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,startanimate,timestamp,last10)});
+
     }
 
     else{
@@ -256,13 +278,19 @@ function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp
     ctx.fillStyle="#000000";
     ctx.strokeStyle="#000000";
 
+    canvas_arrow(ctx,touchx,touchy,touchx+hdist,touchy+vdist);
+
     myevent.publish('userTap',[touchx+hdist,touchy+vdist,leftx,topy,szsize,hdist,vdist,pitchinfo.velocity]);
 
 
 	stopanimate = false;
 	startanimate = false;
     pitchinfo.pitchstring = 'NOTHING';
-    requestAnimationFrame(function(timestamp) {drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,false,timestamp,last10)});
+    console.log('n loops');
+
+    drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,startanimate,timestamp,last10);
+
+
     }
     
 
