@@ -19,7 +19,7 @@ import { newGame } from '../creategame/creategame';
 export class SavethedayPage {
 
   storage: Storage;
-  images = [['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png']];
+  images = [['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png'],['assets/img/blank.png','assets/img/blank.png','assets/img/blank.png','assets/img/blank.png']];
 
 
   constructor(public navCtrl: NavController, public viewCtrl: ViewController, public navParams: NavParams, storage: Storage) {
@@ -30,7 +30,7 @@ export class SavethedayPage {
   	if (val != null){
   	let i = 0;
   	let ii =0;
-  	for (i=0;i<3;i++){
+  	for (i=0;i<9;i++){
   	for (ii=0;ii<4;ii++){
   	if (val[i][ii]=='true') {this.images[i][ii] = 'assets/img/blue.png';} 
   	else {this.images[i][ii] = 'assets/img/blank.png';}
@@ -48,11 +48,13 @@ export class SavethedayPage {
     console.log('ionViewDidLoad SavethedayPage');
   }
 
-  playSavetheday(linescore,gameId){
+  playSavetheday(linescore,gameId,situation=[0,0,0,1,[0,0,0]]){
   this.storage.ready().then(() => {
   this.storage.set('saveId',gameId);
+  this.storage.set('saveRuns','false');
+  this.storage.set('saveRunners','false');
   })
-  newGame('save',this.storage,'team0',15,'team0',this.navCtrl,linescore,[2,0,0,1,[0,1,1]]);
+  newGame('save',this.storage,'team0',15,'team0',this.navCtrl,linescore,situation);
   console.log('std');
 
   		console.log('std storage');

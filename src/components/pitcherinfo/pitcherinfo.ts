@@ -17,8 +17,7 @@ export class PitcherinfoComponent {
 	@ViewChild('pitch3') pitch3;
 	@ViewChild('pitch4') pitch4;
 	@ViewChild('pitch5') pitch5;
-	@ViewChild('velocitySlider') velocitySlider;
-	@ViewChild('movementSlider') movementSlider;
+
 
 
   private Velocity = 50;

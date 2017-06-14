@@ -71,8 +71,8 @@ console.log('con got stored0');
      	
 
        let situation = [0,0,0,0,[0,0,0]];
-	       this.storage.get('situation'+ccc).then((val) => {
-	       situation = val;
+	       this.storage.get('situation'+ccc).then((sval) => {
+	       situation = sval;
 		       let i =0;
 	     	for (i=0;i<teamobj.batters.length;i++){
 	     	var batterP;
@@ -84,19 +84,23 @@ console.log('con got stored0');
 	       }
 	       }
 	       let linescore = [[0],[0],[0],[0]];
-	       	   this.storage.get('linescore'+ccc).then((val) => {
-	       	   linescore = val;
+	       	   this.storage.get('linescore'+ccc).then((lval) => {
+	       	   linescore = lval;
 	       	   let currentSequence = [];
 	       	   	   this.storage.get('currentSequence'+ccc).then((val) => {
 	       	       let csequence = val;
 	       	       csequence.push([Math.floor((pitch[0]-pitch[2])*100./pitch[4]),Math.floor((pitch[1]-pitch[3])*100./pitch[4]),pitch[5],pitch[6]]);
 			       this.storage.set('currentSequence'+ccc,csequence); currentSequence = csequence;
+			       const oldRuns = linescore[2][0];
+			       const oldR1 = situation[4][0];
+			       const oldR2 = situation[4][1];
+			       const oldR3 = situation[4][2];
 
 			       let theresult = determinePlay(this.events,pitch,batter,situation,linescore,ccc,[situation[0],situation[1]],csequence,storage);
 
 			       this.storage.set('situation'+ccc,theresult[0]);
 			       this.storage.set('linescore'+ccc,theresult[1]);
-			       if (ccc=='save'){getSave(linescore,this.storage);}
+			       if (ccc=='save'){getSave(theresult[1],this.storage,'No',theresult[0],oldRuns,oldR1,oldR2,oldR3);}
 			       if (situation[0]==0 && situation[1]==0){
 			       		this.storage.set('currentSequence'+ccc, []); currentSequence = [];
 			       }
@@ -462,7 +466,8 @@ function adjContact(play,velocity,movement){
 	if (play=='Fair'){return 1;}
 }
 
-function getSave(linescore,storage,outcome='No'){
+function getSave(linescore,storage,outcome='No',newSit=[0,0,0,0,[0,0,0]],oldRuns=0,oldR1=0,oldR2=0,oldR3=0){
+
 	if (linescore[2][0]>linescore[3][0]){
 		console.log('Blown Save to Record');
 		document.getElementById('goback').style.display = 'block';
@@ -474,19 +479,26 @@ function getSave(linescore,storage,outcome='No'){
 		storage.ready().then(() => {
 		storage.get('saveId').then(val => {
 		storage.get('save').then(saveval => {
+		storage.get('saveRuns').then(runsval => {
+		storage.get('saveRunners').then(runnersval => {
 		console.log(saveval);
-		let saveArr = [['false','false','false','false'],['false','false','false','false'],['false','false','false','false']];
+		let saveArr = [['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false']];
 		if (saveval != null){
 		saveArr = saveval;
 		}
 		saveArr[val][0]='true';
 		saveArr[val][1]='true';
-		saveArr[val][2]='true';
-		saveArr[val][3]='true';
+		if (runsval=='false'){
+			saveArr[val][2]='true';
+		if (runnersval=='false'){
+			saveArr[val][3]='true';
+		}
+		}
 		storage.set('save',saveArr);
 		})
 		})
-		
+		})
+		})
 		})
 		document.getElementById('goback').style.display = 'block';
 	}
@@ -495,7 +507,7 @@ function getSave(linescore,storage,outcome='No'){
 		storage.ready().then(() => {
 		storage.get('saveId').then(val => {
 		storage.get('save').then(saveval => {
-		let saveArr = [['false','false','false','false'],['false','false','false','false'],['false','false','false','false']];
+		let saveArr = [['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false'],['false','false','false','false']];
 		if (saveval != null){
 		saveArr = saveval;
 		}
@@ -506,6 +518,26 @@ function getSave(linescore,storage,outcome='No'){
 		
 		})
 		document.getElementById('goback').style.display = 'block';
+	}
+	else{
+		if (linescore[2][0]>oldRuns){
+			console.log('Run Scored');
+			storage.ready().then(() => {storage.set('saveRuns','true');})
+
+		}
+		if (newSit[4][0]>oldR1){
+		console.log('Runner on');
+			storage.ready().then(() => {storage.set('saveRunners','true');})
+		}
+		if (newSit[4][1]>oldR2){
+		console.log('Runner on');
+			storage.ready().then(() => {storage.set('saveRunners','true');})
+		}
+		if (newSit[4][2]>oldR3){
+		console.log('Runner on');
+			storage.ready().then(() => {storage.set('saveRunners','true');})
+		}
+
 	}
 
 }

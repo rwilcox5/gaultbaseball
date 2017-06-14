@@ -22,7 +22,6 @@ export class StrikezoneComponent {
   this.events.subscribe('leaving', val => {
   this.events.unsubscribe('pitchinfo');
   this.events.unsubscribe('centralSequence');
-  console.log('leaving szone'+val);
   })
     
 
@@ -32,7 +31,6 @@ export class StrikezoneComponent {
 
 
         let physicalScreenW = window.innerWidth;
-        console.log('psw='+physicalScreenW.toString());
         this.strikezoneCanvas.nativeElement.width = physicalScreenW*.67-10;
         this.strikezoneCanvas.nativeElement.height = physicalScreenW*.67-10;
         let szsize = 100./300.*(physicalScreenW*.67-10);
@@ -73,7 +71,6 @@ export class StrikezoneComponent {
 
 
         let physicalScreenW = window.innerWidth;
-        console.log('psw='+physicalScreenW.toString());
         this.strikezoneCanvas.nativeElement.width = physicalScreenW*.67-10;
         this.strikezoneCanvas.nativeElement.height = physicalScreenW*.67-10;
         let szsize = 100./300.*(physicalScreenW*.67-10);
@@ -107,7 +104,7 @@ var abv = [];
 var abhm = [];
 var abvm = [];
 var pitchinfo = {'velocity':50,'hmove':5,'vmove':5,'rawControl':5,'pitchstring':'NOTHING'};
-var requestId;
+
 
 function stopZone(tx,ty){
 	stopanimate = true;
@@ -158,7 +155,6 @@ function update(leftx,topy,pitchvelocity,maxx,maxy,szsize,last10){
 function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp,last10){
 
     if (pitchinfo.pitchstring == 'NOTHING'){
-    console.log('NTHING');
         let i = 0;
         for (i=0;i<abh.length;i++){
             if (leftx+abh[i]*szsize/100.>0 && topy+abv[i]*szsize/100.>0){
@@ -184,7 +180,7 @@ function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp
         }
     }
 	if (pitchinfo.pitchstring != 'NOTHING'){
-    console.log('Not NTHING');
+
 	startanimate = true;
     hdist = 20;
     vdist = 30;
@@ -249,7 +245,7 @@ function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp
     last10[1].push(0);
     }
     }
-    requestId = requestAnimationFrame(function(timestamp) {drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,startanimate,timestamp,last10)});
+    requestAnimationFrame(function(timestamp) {drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,startanimate,timestamp,last10)});
     }
 
 
@@ -286,7 +282,6 @@ function drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,clearit,timestamp
 	stopanimate = false;
 	startanimate = false;
     pitchinfo.pitchstring = 'NOTHING';
-    console.log('n loops');
 
     drawZone(strikezoneCanvas,szsize,leftx,topy,maxx,maxy,startanimate,timestamp,last10);
 

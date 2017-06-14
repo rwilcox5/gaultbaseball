@@ -54,9 +54,13 @@ private oppOffense = 50;
 
 	   
 
-
+		console.log('constructed');
   }
 
+ ionViewDidLoad() {
+    console.log('ionViewDidLoad HomePage');
+
+  }
 
 loadSwing(){  
 
