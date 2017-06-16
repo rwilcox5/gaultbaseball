@@ -23,6 +23,9 @@ export class ScoreboardComponent {
   HomeTeamErrors: number = 0;
 
   constructor(public events: Events) {
+  this.events.subscribe('leaving', val => {
+  this.events.unsubscribe('centralScore');
+  })
   this.linescoreAway = ['0','0','0','0','0','0','0','0','0'];
   this.linescoreHome = ['0','0','0','0','0','0','0','0','0'];
 

@@ -20,20 +20,18 @@ export class CentrallogicComponent {
 
   constructor(public storage: Storage, public events: Events) {
 
+  this.events.subscribe('leaving', val => {
+  this.events.unsubscribe('userTap');
+  })
+
   this.storage.ready().then(() => {
-console.log('con got stored0');
-       this.storage.get('gametype').then((gtval) => {
-       console.log('con got stored5');
-       })
+
        this.storage.get('gametype').then((gtval) => {
     let ccc = gtval;
-    console.log('con got stored1');
 
   this.storage.get('currentSequence'+ccc).then((val) => {
-  console.log('con got stored2');
   this.storage.get('linescore'+ccc).then((linescore) => {
   this.storage.get('situation'+ccc).then((situation) => {
-  console.log('con got stored3');
   this.storage.get('currentPitcher'+ccc).then(currentPitcher => {
   this.storage.get('awayTeam'+ccc).then(ateamval => {
   this.storage.get('homeTeam'+ccc).then(hteamval => {
@@ -52,7 +50,7 @@ console.log('con got stored0');
     this.events.publish('centralTap', situation); 
     this.events.publish('centralScore', linescore);
     this.events.publish('centralBatter',situation[3]%9+1);
-    this.events.publish('centralPitcher',pitcher);
+    this.events.publish('centralPitcher',[pitcher,ccc]);
     console.log('pub events');
   })
   })
@@ -142,7 +140,7 @@ function determinePlay(myevent,pitch,batter,situation,linescore,gtype,count,cseq
 
 
             let isPlay = makePlay(touchx,touchy,batter.singleMap,batter.doubleMap,batter.tripleMap,batter.hrMap,batter.contact,batter.power);
-            if (isPlay=='Out'){situation[0] = 0; situation[1]=0; document.getElementById('lastpitch').innerHTML = 'Out'; 
+            if (isPlay=='Out'){myevent.publish('abResult','Out'); situation[0] = 0; situation[1]=0; document.getElementById('lastpitch').innerHTML = 'Out'; 
             if (situation[2]==2) {situation[2]=0; situation[4]=[0,0,0]; document.getElementById('lastpitch').innerHTML = 'Inning Over';
 	            if (linescore[0].length<9){
 	            linescore[0].push(0); linescore[1].push(Math.floor(Math.random()*2));
@@ -175,7 +173,7 @@ function determinePlay(myevent,pitch,batter,situation,linescore,gtype,count,cseq
 	            }
 	            }
             } else {situation[2]++;}}
-            else { linescore = linescoreChange(isPlay,situationhold,linescore,gtype); situation = situationChange(isPlay, situation);}
+            else { linescore = linescoreChange(isPlay,situationhold,linescore,gtype); situation = situationChange(isPlay, situation, myevent);}
             situation[3]++;
             }
         }
@@ -306,6 +304,7 @@ function makeSwing(tx,ty,swingMap,count){
 
  function noContact(isStrike, situation, linescore,myevent,gtype,storage){
 	if (situation[0]==3 && isStrike=='Ball'){
+		myevent.publish('abResult','Walk');
 		situation[0]=0;
 		situation[1]=0;
 		if (situation[4][2]==0){situation[4][2]=1;}
@@ -317,6 +316,7 @@ function makeSwing(tx,ty,swingMap,count){
 		situation[3]++;
 	}
 	else if (situation[1]==2 && isStrike=='Strike'){
+		myevent.publish('abResult','Strikeout');
 		situation[0]=0;
 		situation[1]=0;
 		if (situation[2]==2){
@@ -374,24 +374,27 @@ function makeSwing(tx,ty,swingMap,count){
 
  }
 
- function situationChange(isPlay, situation){
+ function situationChange(isPlay, situation, myevent){
  	situation[0]=0;
  	situation[1]=0;
 	if (isPlay=='Single'){
+		myevent.publish('abResult','Single');
 		situation[4].shift();
 		situation[4].push(1);
 
 	}
 	else if (isPlay=='Double'){
+		myevent.publish('abResult','Double');
 		situation[4].shift();
 		situation[4].shift();
 		situation[4].push(1);
 		situation[4].push(0);
 	}
 	else if (isPlay=='Triple'){
+		myevent.publish('abResult','Triple');
 		situation[4] = [1,0,0];
 	}
-	else {situation[4] = [0,0,0];}
+	else {situation[4] = [0,0,0]; myevent.publish('abResult','Home Run');}
 	document.getElementById('lastpitch').innerHTML = isPlay;
 	return situation;
 
@@ -503,7 +506,7 @@ function getSave(linescore,storage,outcome='No',newSit=[0,0,0,0,[0,0,0]],oldRuns
 		document.getElementById('goback').style.display = 'block';
 	}
 	else if (outcome=='Tie'){
-		console.log('Save');
+		console.log('Tie');
 		storage.ready().then(() => {
 		storage.get('saveId').then(val => {
 		storage.get('save').then(saveval => {

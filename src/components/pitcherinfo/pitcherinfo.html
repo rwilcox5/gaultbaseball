@@ -8,14 +8,17 @@
 
 		<table  style="table-layout:fixed; height:100%;" id="pitcherInfo">
 		<tr><td>
-		<situation></situation>
+		<situation *ngIf="dice"></situation>
+		<situation-dice *ngIf="!dice"></situation-dice>
+
+
 		</td></tr>
 
 		<tr><td>
 		<div id="lastpitch"></div>
 		</td></tr>
 
-		<tr><td>
+		<tr ><td>
 		<div id="lastresult"></div>
 		</td></tr>
 

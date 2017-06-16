@@ -160,7 +160,7 @@ loadSwing(){
 		}
 
   nobreaks(){
-	this.newGameOld('nobreaks',[[0,0,0,0,0,0],[1,0,0,0,0],[0,1,0],[1,3,0]],[2,0,0,1,[0,1,1]]);
+	newGame('nobreaks',this.storage,'team0',15,'team0',this.navCtrl,[[0],[],[0,1,0],[1,3,0]],[0,0,0,1,[0,1,1]]);
     this.storage.ready().then(() => {
 		this.storage.set('gametype','nobreaks');
 		})

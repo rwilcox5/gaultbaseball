@@ -1,0 +1,36 @@
+<!-- Generated template for the SituationDiceComponent component -->
+<div>
+{{balls}} Balls<br>
+{{strikes}} Strikes<br>
+<table style="width: 100%; margin-top:5px; table-layout: fixed;">
+<tr><td>{{outcomes[0]}}</td><td><span style="visibility:hidden;">0</span></td><td>{{outcomes[2]}}</td></tr>
+<tr><td><span style="visibility:hidden;">0</span></td><td>{{outcomes[4]}}</td><td><span style="visibility:hidden;">0</span></td></tr>
+<tr><td>{{outcomes[6]}}</td><td><span style="visibility:hidden;">0</span></td><td>{{outcomes[8]}}</td></tr>
+</table>
+<ion-item>
+  <ion-select [(ngModel)]="place">
+  	<ion-option value="0" *ngIf="pla[0]">HR</ion-option>
+  	<ion-option value="1" *ngIf="pla[1]">2B</ion-option>
+  	<ion-option value="2" *ngIf="pla[2]">1B</ion-option>
+  	<ion-option value="3" *ngIf="pla[3]">BB</ion-option>
+  	<ion-option value="4" *ngIf="pla[4]">Out</ion-option>
+    <ion-option value="5" *ngIf="pla[5]">K</ion-option>    
+    <ion-option value="7" *ngIf="pla[7]">FH</ion-option>
+    <ion-option value="8" *ngIf="pla[8]">3K</ion-option>
+    <ion-option value="9" *ngIf="pla[9]">4K</ion-option>
+    <ion-option value="10" *ngIf="pla[10]">4R</ion-option>
+    <ion-option value="11" *ngIf="pla[11]">5R</ion-option>
+    <ion-option value="12" *ngIf="pla[12]">$</ion-option>
+    <ion-option value="13" *ngIf="pla[13]">Any</ion-option>
+  </ion-select>
+</ion-item>
+<button ion-button on-tap="onChoose()">Select</button>
+<!--<button ion-button on-tap="fake(0)">HR</button>
+<button ion-button on-tap="fake(1)">3B</button>
+<button ion-button on-tap="fake(2)">2B</button>
+<button ion-button on-tap="fake(3)">1B</button>
+<button ion-button on-tap="fake(4)">BB</button>
+<button ion-button on-tap="fake(5)">Out</button>
+<button ion-button on-tap="fake(6)">K</button>-->
+
+</div>

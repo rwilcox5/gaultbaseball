@@ -29,6 +29,7 @@ import { BatterinfoComponent } from '../components/batterinfo/batterinfo';
 import { InfomenuComponent } from '../components/infomenu/infomenu';
 import { PitcherinfoComponent } from '../components/pitcherinfo/pitcherinfo';
 import { CentrallogicComponent } from '../components/centrallogic/centrallogic';
+import { SituationDiceComponent } from '../components/situation-dice/situation-dice';
 
 
 
@@ -56,7 +57,8 @@ import { CentrallogicComponent } from '../components/centrallogic/centrallogic';
     BatterinfoComponent,
     InfomenuComponent,
     PitcherinfoComponent,
-    CentrallogicComponent
+    CentrallogicComponent,
+    SituationDiceComponent
   ],
   imports: [
     BrowserModule,

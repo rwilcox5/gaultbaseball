@@ -36,6 +36,9 @@ export class BatterinfoComponent {
   today: string;
 
   constructor(public storage: Storage, public events: Events) {
+  this.events.subscribe('leaving', val => {
+  this.events.unsubscribe('centralBatter');
+  })
   let i = 0;
   let cutoffs = [.6,.55,.525,.5,.475,.45,.425,.4,.375,.35,.325,.3,.275,.25,.2];
   let aahold = ['blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue','blue'];

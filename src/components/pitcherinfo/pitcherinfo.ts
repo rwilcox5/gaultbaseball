@@ -17,6 +17,7 @@ export class PitcherinfoComponent {
 	@ViewChild('pitch3') pitch3;
 	@ViewChild('pitch4') pitch4;
 	@ViewChild('pitch5') pitch5;
+	dice: boolean = true;
 
 
 
@@ -63,10 +64,14 @@ export class PitcherinfoComponent {
   r: number = 1019;
 
   constructor(public events: Events) {
+  this.events.subscribe('leaving', val => {
+  this.events.unsubscribe('centralPitcher');
+  })
     console.log('Hello PitcherinfoComponent Component');
 
-       this.events.subscribe('centralPitcher', val => {
-
+       this.events.subscribe('centralPitcher', allVal => {
+       let val = allVal[0];
+       if (allVal[1]=='nobreaks'){this.dice = false;}
 
        let numPitches = val.numPitches;
        if (numPitches<2){ document.getElementById('pitch2').className += 'hiddenPitch'; document.getElementById('pitch2n').className += 'hiddenPitch'; document.getElementById('pitch2v').className += 'hiddenPitch'; document.getElementById('pitch2c').className += 'hiddenPitch';}
