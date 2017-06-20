@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { GamePage } from '../game/game';
+import { GameNothingPage } from '../game-nothing/game-nothing';
 import { Bust27Page } from '../bust27/bust27';
 import { NothingPage } from '../nothing/nothing';
 import { SavethedayPage } from '../savetheday/savetheday';

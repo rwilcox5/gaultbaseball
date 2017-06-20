@@ -1,0 +1,27 @@
+page-game-nothing {
+
+table#scoreboard td {
+   border: 1px solid black;
+   width:6%;
+	text-align: center;
+	background-color: white;
+}
+table#scoreboard th {
+   border: 1px solid black;
+   width:6%;
+	text-align: center;
+	text-decoration: bold;
+	background-color: white;
+}
+table#scoreboard  {
+    width: 100%;
+    background-color: white;
+}
+
+td.team {
+	width: 28%;
+	text-align: left;
+	background-color: white;
+}
+
+}

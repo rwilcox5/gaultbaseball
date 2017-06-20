@@ -7,6 +7,7 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
 import { GamePage } from '../pages/game/game';
+import { GameNothingPage } from '../pages/game-nothing/game-nothing';
 import { LineupPage } from '../components/lineup/lineup';
 import { BullpenPage } from '../components/bullpen/bullpen';
 import { Bust27Page } from '../pages/bust27/bust27';
@@ -38,6 +39,7 @@ import { SituationDiceComponent } from '../components/situation-dice/situation-d
     MyApp,
     HomePage,
     GamePage,
+    GameNothingPage,
     ListPage,
     LineupPage,
     BullpenPage,
@@ -70,6 +72,7 @@ import { SituationDiceComponent } from '../components/situation-dice/situation-d
     MyApp,
     HomePage,
     GamePage,
+    GameNothingPage,
     LineupPage,
     BullpenPage,
     ListPage,
